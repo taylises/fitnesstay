@@ -533,18 +533,37 @@
         let feedList = [];
         let myChart = null;
 
-        // ================= INICIALIZAÇÃO SEGURA (CORRIGE O ERRO DE TELA BRANCA/NULL) =================
-        window.addEventListener('DOMContentLoaded', () => {
+        // Função segura para trocar telas sem erros
+        function showScreen(screen) {
+            const loginEl = document.getElementById('login-screen');
+            const appEl = document.getElementById('app-content');
+            if(loginEl && appEl) {
+                if(screen === 'app') {
+                    loginEl.style.display = 'none';
+                    appEl.style.display = 'block';
+                } else {
+                    loginEl.style.display = 'flex';
+                    appEl.style.display = 'none';
+                }
+            }
+        }
+
+        function startApp() {
             const isLoggedIn = localStorage.getItem('magicDiaryLoggedIn') === 'true';
             if (isLoggedIn) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
+                showScreen('app');
                 init();
             } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-content').style.display = 'none';
+                showScreen('login');
             }
-        });
+        }
+
+        // ================= INICIALIZAÇÃO SEGURA (CORRIGE O ERRO DE TELA BRANCA/NULL) =================
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startApp);
+        } else {
+            startApp();
+        }
 
         // ================= SISTEMA DE LOGIN =================
         function fazerLogin() {
@@ -552,8 +571,7 @@
             const password = document.getElementById('password').value;
             if(email && password) {
                 localStorage.setItem('magicDiaryLoggedIn', 'true');
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
+                showScreen('app');
                 init();
             } else {
                 alert("Preencha e-mail e senha, bruxinha! 🌙");
@@ -566,8 +584,7 @@
             if(email && password) {
                 localStorage.setItem('magicDiaryLoggedIn', 'true');
                 alert("Conta mágica criada com sucesso no seu aparelho! 🎉");
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
+                showScreen('app');
                 init();
             } else {
                 alert("Preencha e-mail e senha para criar a conta! 🌙");
@@ -577,10 +594,11 @@
         function fazerLogout() {
             if(confirm("Deseja fechar seu Diário Mágico?")) {
                 localStorage.removeItem('magicDiaryLoggedIn');
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-content').style.display = 'none';
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
+                showScreen('login');
+                const emailEl = document.getElementById('email');
+                const passEl = document.getElementById('password');
+                if(emailEl) emailEl.value = '';
+                if(passEl) passEl.value = '';
             }
         }
 
@@ -838,17 +856,16 @@
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
                 
                 const payload = {
-                    contents: [{ parts: [{ text: `Calcule as calorias e os macronutrientes da seguinte refeição: "${input}"` }] }],
-                    systemInstruction: { parts: [{ text: "Você é um assistente nutricional. Retorne os dados em formato JSON estrito." }] },
+                    contents: [{ parts: [{ text: `Atue como um assistente nutricional. Calcule as calorias e os macronutrientes aproximados da seguinte refeição: "${input}"` }] }],
                     generationConfig: { 
                         responseMimeType: "application/json",
                         responseSchema: {
                             type: "OBJECT",
                             properties: {
                                 name: { type: "STRING" },
-                                p: { type: "INTEGER" },
-                                c: { type: "INTEGER" },
-                                f: { type: "INTEGER" }
+                                p: { type: "NUMBER" },
+                                c: { type: "NUMBER" },
+                                f: { type: "NUMBER" }
                             },
                             required: ["name", "p", "c", "f"]
                         }
@@ -869,19 +886,32 @@
                 const result = JSON.parse(textResult);
 
                 if (result && result.name) {
-                    document.getElementById('food-name').value = result.name;
-                    document.getElementById('food-prot').value = Math.round(result.p || 0);
-                    document.getElementById('food-carb').value = Math.round(result.c || 0);
-                    document.getElementById('food-fat').value = Math.round(result.f || 0);
-                    document.getElementById('smart-food').value = '';
-                    document.getElementById('save-recipe').checked = true;
+                    const nameEl = document.getElementById('food-name');
+                    if(nameEl) nameEl.value = result.name;
+                    
+                    const protEl = document.getElementById('food-prot');
+                    if(protEl) protEl.value = Math.round(result.p || 0);
+                    
+                    const carbEl = document.getElementById('food-carb');
+                    if(carbEl) carbEl.value = Math.round(result.c || 0);
+                    
+                    const fatEl = document.getElementById('food-fat');
+                    if(fatEl) fatEl.value = Math.round(result.f || 0);
+                    
+                    const smartFoodEl = document.getElementById('smart-food');
+                    if(smartFoodEl) smartFoodEl.value = '';
+                    
+                    const saveRecipeEl = document.getElementById('save-recipe');
+                    if(saveRecipeEl) saveRecipeEl.checked = true;
                 }
             } catch (e) {
                 console.error(e);
-                alert("A magia falhou! Tente novamente mais tarde. ✨");
+                alert("A magia falhou! Tente novamente. ✨");
             } finally {
-                btn.innerHTML = originalText; 
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = originalText; 
+                    btn.disabled = false;
+                }
             }
         }
 
