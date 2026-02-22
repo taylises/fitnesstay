@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel Atleta Híbrida - Carol</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Paleta Delicada & Ryca (Nude, Champagne, Off-White, Sage) */
+            --bg-main: #FDFBF9;
+            --bg-card: #FFFFFF;
+            --bg-card-hover: #FAF7F2;
+            
+            --text-main: #2C2A29;
+            --text-muted: #8A817C;
+            
+            --primary: #C5A880; /* Champagne/Gold */
+            --secondary: #D4C1B3; /* Soft Nude */
+            --accent: #B2BCA1; /* Sage Green Delicado */
+            --danger: #DDA7A5; /* Muted Rose */
+            
+            --prot-color: #C5A880; 
+            --carb-color: #D4C1B3;
+            --fat-color: #9EA392;
+
+            --shadow-premium: 0 12px 30px rgba(0, 0, 0, 0.03);
+            --border-light: 1px solid rgba(197, 168, 128, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            padding-bottom: 110px; 
+        }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        header {
+            background: var(--bg-card);
+            padding: 50px 20px 25px;
+            text-align: center;
+            border-bottom: var(--border-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+        }
+        .header-tag {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--primary); font-weight: 600; margin-bottom: 8px; display: block;
+        }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+        .subtitle { color: var(--text-muted); font-size: 12px; font-weight: 400; letter-spacing: 1px; }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 25px 20px; position: relative; }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        .section.active { display: block; }
+
+        .goal-selector { display: flex; background: #F4EFEA; border-radius: 12px; padding: 4px; margin-bottom: 25px; }
+        .goal-btn { flex: 1; padding: 12px; text-align: center; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .goal-btn.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+
+        .card { background: var(--bg-card); border-radius: 18px; padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow-premium); border: var(--border-light); }
+        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; margin-bottom: 20px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        .card-title i { color: var(--primary); }
+
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px dashed #EAE3D9; }
+        .summary-box { background: #FAF7F2; padding: 15px; border-radius: 14px; text-align: center; border: 1px solid #F0ECE6; }
+        .summary-box span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
+        .summary-box strong { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; line-height: 1.1; }
+        .text-in { color: var(--text-main); }
+        .text-out { color: var(--accent); }
+
+        .macro-row { margin-bottom: 15px; }
+        .macro-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 500; letter-spacing: 0.5px; }
+        .progress-bg { background: #F4EFEA; height: 6px; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
+        .p-prot { background: var(--prot-color); }
+        .p-carb { background: var(--carb-color); }
+        .p-fat { background: var(--fat-color); }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea { width: 100%; background: #FFFFFF; border: 1px solid #EAE3D9; color: var(--text-main); padding: 14px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; outline: none; transition: 0.3s; font-family: 'Montserrat', sans-serif; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.1); }
+        input::placeholder, textarea::placeholder { color: #D1CCC7; font-weight: 400; }
+        
+        .input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .input-box { position: relative; }
+        .input-box span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        
+        .btn-submit { width: 100%; background: var(--text-main); border: none; color: #FFF; padding: 16px; border-radius: 12px; font-weight: 500; font-size: 13px; letter-spacing: 1.5px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
+        .btn-submit:active { transform: scale(0.98); background: #1A1A1A; }
+        .btn-submit.btn-activity { background: var(--accent); color: #FFF; }
+        .btn-submit.btn-activity:active { background: #9CA78B; }
+
+        .ai-group { background: #FAF7F2; padding: 18px; border-radius: 12px; border: 1px dashed var(--primary); margin-bottom: 20px; }
+        .ai-group label { display: flex; align-items: center; gap: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 12px; font-weight: 700; }
+        .btn-ai { width: 100%; background: linear-gradient(135deg, var(--primary), #D4C1B3); border: none; color: #FFF; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn-ai:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .feed-header { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--text-main); margin: 35px 0 15px; border-bottom: 1px solid #EAE3D9; padding-bottom: 10px; }
+        .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #FFFFFF; border-radius: 16px; margin-bottom: 15px; border: var(--border-light); box-shadow: 0 4px 10px rgba(0,0,0,0.01); }
+        .feed-info h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        .feed-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; display: flex; gap: 12px; }
+        .feed-number { font-size: 18px; font-weight: 600; }
+        .feed-number.kcal-in { color: var(--text-main); }
+        .feed-number.kcal-out { color: var(--accent); }
+        .btn-delete { background: transparent; border: none; color: #D1CCC7; cursor: pointer; padding: 5px; font-size: 20px; transition: 0.2s; }
+        .btn-delete:hover { color: var(--danger); }
+
+        .profile-card { display: flex; align-items: center; gap: 20px; background: var(--primary); color: #FFF; padding: 25px; border-radius: 18px; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(197, 168, 128, 0.3); }
+        .profile-avatar { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; border: 2px solid #FFF; }
+        .profile-data h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 5px; }
+        .profile-data p { font-size: 12px; opacity: 0.9; letter-spacing: 0.5px; }
+
+        .evolution-item { background: #FFFFFF; border: var(--border-light); padding: 20px; border-radius: 16px; margin-bottom: 15px; }
+        .evo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #EAE3D9; }
+        .evo-date { font-weight: 600; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .evo-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .metric { display: flex; flex-direction: column; gap: 4px; }
+        .metric-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        .metric-value { font-size: 16px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .diff-badge { font-size: 10px; padding: 3px 6px; border-radius: 6px; font-weight: 700; }
+        .diff-pos { background: rgba(178, 188, 161, 0.2); color: #7A8765; } 
+        .diff-neg { background: rgba(221, 167, 165, 0.2); color: #B56B68; } 
+        .diff-neutral { background: #F4EFEA; color: var(--text-muted); }
+
+        .workout-day { margin-bottom: 15px; }
+        .workout-header { background: #FFFFFF; padding: 22px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: var(--border-light); transition: 0.3s; }
+        .workout-header h3 { font-size: 13px; display: flex; align-items: center; gap: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .workout-header h3 span { color: var(--primary); font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; text-transform: none; }
+        .workout-content { background: #FAF7F2; padding: 20px; border-radius: 0 0 16px 16px; margin-top: -10px; display: none; border: var(--border-light); border-top: none; }
+        .workout-day.open .workout-content { display: block; animation: slideDown 0.3s ease; }
+        .workout-day.open .workout-header { border-radius: 16px 16px 0 0; border-bottom: 1px dashed #EAE3D9; }
+        
+        .exercise { padding: 16px 0; border-bottom: 1px solid #EAE3D9; position: relative; }
+        .exercise:last-child { border-bottom: none; padding-bottom: 0; }
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .ex-details h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text-main); line-height: 1.2; margin-bottom: 4px; }
+        .ex-details p { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+        .ex-sets { background: var(--bg-card); border: 1px solid #EAE3D9; color: var(--text-main); padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 600; text-align: center; white-space: nowrap; letter-spacing: 0.5px; }
+        .btn-video { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); font-size: 11px; font-weight: 600; text-decoration: none; margin-top: 12px; text-transform: uppercase; letter-spacing: 1px; background: transparent; border: none; cursor: pointer; transition: 0.2s; padding:0; }
+        .btn-video:hover { opacity: 0.7; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-around; padding: 15px 10px; z-index: 100; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; background: none; border: none; flex: 1; }
+        .nav-item i { font-size: 24px; font-weight: 300; transition: 0.3s; }
+        .nav-item.active { color: var(--text-main); }
+        .nav-item.active i { color: var(--primary); }
+
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="header-tag">Diário Fitness</span>
+        <h1>Carol S.</h1>
+        <p class="subtitle">Atleta Híbrida &bull; Ovolactovegetariana</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- DIÁRIO -->
+        <div id="sec-diario" class="section active">
+            <div class="goal-selector">
+                <button class="goal-btn active" onclick="setGoal('emagrecer')" id="btn-emagrecer">Definir Corpo</button>
+                <button class="goal-btn" onclick="setGoal('massa')" id="btn-massa">Hipertrofia</button>
+            </div>
+
+            <div class="card" style="padding: 25px 20px;">
+                <h3 class="card-title"><i class="ph ph-chart-pie-slice"></i> Resumo Diário</h3>
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <span>Ingestão</span>
+                        <strong class="text-in" id="kcal-current">0</strong>
+                        <span style="font-size: 9px; margin-top:2px;">Meta: <span id="kcal-max">1600</span> kcal</span>
+                    </div>
+                    <div class="summary-box">
+                        <span>Gasto Ativo</span>
+                        <strong class="text-out" id="kcal-burned">0</strong>
+                        <span style="font-size: 9px; margin-top:2px;">Em treinos hoje</span>
+                    </div>
+                </div>
+                <div class="macro-row">
+                    <div class="macro-header"><span>Proteínas (PT)</span><span id="prot-text">0 / 130g</span></div>
+                    <div class="progress-bg"><div class="progress-fill p-prot" id="bar-prot" style="width: 0%;"></div></div>
+                </div>
+                <div class="macro-row">
+                    <div class="macro-header"><span>Carboidratos (CB)</span><span id="carb-text">0 / 160g</span></div>
+                    <div class="progress-bg"><div class="progress-fill p-carb" id="bar-carb" style="width: 0%;"></div></div>
+                </div>
+                <div class="macro-row">
+                    <div class="macro-header"><span>Gorduras (GD)</span><span id="fat-text">0 / 48g</span></div>
+                    <div class="progress-bg"><div class="progress-fill p-fat" id="bar-fat" style="width: 0%;"></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="ph ph-fork-knife"></i> Nutrição</h3>
+                
+                <div class="ai-group">
+                    <label><i class="ph ph-sparkle" style="font-size:16px;"></i> Assistente Inteligente</label>
+                    <textarea id="ai-input" rows="2" placeholder="O que você comeu? Ex: Panqueca de aveia e 1 banana..."></textarea>
+                    <button id="btn-ai" class="btn-ai" onclick="calculateAI()">Calcular com IA</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Minhas Refeições Salvas</label>
+                    <select id="smart-food" onchange="fillSmartFood()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Nome do Prato</label>
+                    <input type="text" id="food-name" placeholder="Ex: Ovos Mexidos">
+                </div>
+                <div class="input-row">
+                    <div class="input-box"><input type="number" id="food-prot" placeholder="0"><span>PT</span></div>
+                    <div class="input-box"><input type="number" id="food-carb" placeholder="0"><span>CB</span></div>
+                    <div class="input-box"><input type="number" id="food-fat" placeholder="0"><span>GD</span></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom: 20px;">
+                    <input type="checkbox" id="save-recipe" style="width:16px; height:16px; accent-color: var(--primary);">
+                    <label for="save-recipe" style="font-size: 12px; font-weight: 500; color:var(--text-muted); cursor:pointer;">Salvar prato para os próximos dias</label>
+                </div>
+                <button class="btn-submit" onclick="addFood()">Registrar Refeição</button>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="ph ph-person-simple-run"></i> Atividade Física</h3>
+                <div class="input-group">
+                    <label>Tipo de Treino</label>
+                    <select id="work-type">
+                        <option value="Musculação">Musculação (~6 kcal/min)</option>
+                        <option value="Corrida">Corrida (~10 kcal/min)</option>
+                        <option value="HIIT">HIIT / Funcional (~9 kcal/min)</option>
+                        <option value="Caminhada">Caminhada (~5 kcal/min)</option>
+                        <option value="Yoga/Alongamento">Yoga / Alongamento (~3 kcal/min)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Duração (Minutos)</label>
+                    <input type="number" id="work-time" placeholder="Ex: 45">
+                </div>
+                <div class="input-group">
+                    <label>Anotações (Opcional)</label>
+                    <input type="text" id="work-notes" placeholder="Ex: Treino A completo!">
+                </div>
+                <button class="btn-submit btn-activity" onclick="addActivity()">Registrar Atividade</button>
+            </div>
+
+            <h2 class="feed-header">Histórico de Hoje</h2>
+            <div id="feed-container"></div>
+            <div style="height: 20px;"></div>
+        </div>
+
+        <!-- EVOLUÇÃO -->
+        <div id="sec-evolucao" class="section">
+            <div class="profile-card">
+                <div class="profile-avatar">CS</div>
+                <div class="profile-data">
+                    <h3>Carol S.</h3>
+                    <p>Objetivo: Recomposição Corporal</p>
+                    <p>Idade: 27 anos</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="ph ph-ruler"></i> Nova Avaliação</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Registre as medidas e dados da sua balança de bioimpedância.</p>
+                
+                <div class="input-group">
+                    <label>Data da Avaliação</label>
+                    <input type="date" id="evo-date">
+                </div>
+
+                <div class="input-row" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Peso Corporal</label>
+                        <input type="number" id="evo-weight" placeholder="00.0" step="0.1"><span>KG</span>
+                    </div>
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Gordura (BF)</label>
+                        <input type="number" id="evo-bf" placeholder="00.0" step="0.1"><span>%</span>
+                    </div>
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Massa Muscular</label>
+                        <input type="number" id="evo-muscle" placeholder="00.0" step="0.1"><span>%</span>
+                    </div>
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Cintura (Umbigo)</label>
+                        <input type="number" id="evo-waist" placeholder="00.0" step="0.1"><span>CM</span>
+                    </div>
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Quadril (Maior)</label>
+                        <input type="number" id="evo-hips" placeholder="00.0" step="0.1"><span>CM</span>
+                    </div>
+                    <div class="input-box">
+                        <label style="font-size:10px; margin-bottom:4px;">Coxa (Maior)</label>
+                        <input type="number" id="evo-thigh" placeholder="00.0" step="0.1"><span>CM</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" style="background: var(--primary); color: #FFF; margin-top: 10px;" onclick="addEvolution()">Salvar Avaliação</button>
+            </div>
+
+            <h2 class="feed-header">Seu Histórico</h2>
+            <div id="evolution-container"></div>
+            <div style="height: 20px;"></div>
+        </div>
+
+        <!-- PLANILHA DE TREINOS -->
+        <div id="sec-treino" class="section">
+            <div style="margin-bottom: 25px; text-align: center;">
+                <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600;">Sua Planilha</h2>
+                <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;">Time Híbrido &bull; 5 Dias</p>
+            </div>
+            
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)"><h3><span>A</span> Superiores</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Aquecimento</h4><p>Intervalo: 1 Min</p></div><div class="ex-sets">Pré-treino</div></div><button class="btn-video" onclick="playVideo('ta-aquec', 'Aquecimento A')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Flexão + Elev. Lateral</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('ta-flexao-lat', 'Flexão + Elev. Lateral')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Crucifixo + Elev. Frontal</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('ta-cruc-front', 'Crucifixo + Elev. Frontal')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Flexão Inc. + Militar</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('ta-flexinc-mil', 'Flexão Inc. + Militar')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Tríceps Testa</h4><p>Meta Repetição | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('ta-triceps', 'Tríceps Testa')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                </div>
+            </div>
+
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)"><h3><span>B</span> Inferiores</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Agachamento Corporal</h4><p>Aquecimento | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tb-aquec', 'Aquecimento B')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Agachamento + Cadeira</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3x15+1m</div></div><button class="btn-video" onclick="playVideo('tb-agach-cad', 'Agachamento + Cadeira')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Avanço Alternado</h4><p>Cada lado | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tb-avanco', 'Avanço Alternado')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Elevação Pélvica</h4><p>Meta Repetição | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tb-pelvica', 'Elevação Pélvica')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Prancha Inv. + Passada</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">45s+15</div></div><button class="btn-video" onclick="playVideo('tb-prancha-pass', 'Prancha Inv. + Passada')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Agachamento Sumô</h4><p>Meta Repetição | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tb-sumo', 'Agachamento Sumô')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                </div>
+            </div>
+
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)"><h3><span>C</span> Costas & Bíceps</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Puxada Alta + Serrote</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tc-puxada-ser', 'Puxada Alta + Serrote')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Crucifixo Inv + Remada</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tc-crucinv-rem', 'Crucifixo Inv + Remada')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Rosca + Encolhimento</h4><p>Bi-Set | Int: 90s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tc-rosca-enc', 'Rosca + Encolhimento')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Bíceps Martelo</h4><p>Meta Repetição | Int: 45s</p></div><div class="ex-sets">3 x 15</div></div><button class="btn-video" onclick="playVideo('tc-martelo', 'Bíceps Martelo')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                </div>
+            </div>
+
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)"><h3><span>D</span> HIIT Abdominal</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <button class="btn-submit" style="background:transparent; color:var(--primary); border:1px solid var(--primary); margin-bottom:15px; padding:12px;" onclick="playVideo('td-hiit-geral', 'Circuito HIIT Abdominal')"><i class="ph ph-play-circle" style="font-size:18px;"></i> Vídeo do Circuito Completo</button>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Crunch</h4><p>Intervalo: 10s</p></div><div class="ex-sets">20 Seg</div></div><button class="btn-video" onclick="playVideo('td-crunch', 'Crunch')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Elevação de Pernas</h4><p>Intervalo: 10s</p></div><div class="ex-sets">20 Seg</div></div><button class="btn-video" onclick="playVideo('td-elev-pernas', 'Elevação de Pernas')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Abdominal Remador</h4><p>Intervalo: 10s</p></div><div class="ex-sets">20 Seg</div></div><button class="btn-video" onclick="playVideo('td-remador', 'Abdominal Remador')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Prancha Abdominal</h4><p>Intervalo: 10s</p></div><div class="ex-sets">20 Seg</div></div><button class="btn-video" onclick="playVideo('td-prancha', 'Prancha Abdominal')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                </div>
+            </div>
+
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)"><h3><span>E</span> Funcional</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <button class="btn-submit" style="background:transparent; color:var(--primary); border:1px solid var(--primary); margin-bottom:15px; padding:12px;" onclick="playVideo('te-funcional-geral', 'Circuito Funcional')"><i class="ph ph-play-circle" style="font-size:18px;"></i> Vídeo do Circuito Completo</button>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Agachamento com Salto</h4><p>Intervalo: 1 Min</p></div><div class="ex-sets">15 Reps</div></div><button class="btn-video" onclick="playVideo('te-agach-salto', 'Agachamento com Salto')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Remada no TRX</h4><p>Intervalo: 90s</p></div><div class="ex-sets">15 Reps</div></div><button class="btn-video" onclick="playVideo('te-trx', 'Remada no TRX')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Recuo Alternado</h4><p>Intervalo: 90s</p></div><div class="ex-sets">15 Reps</div></div><button class="btn-video" onclick="playVideo('te-recuo', 'Recuo Alternado')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Flexão no Solo</h4><p>Intervalo: 90s</p></div><div class="ex-sets">15 Reps</div></div><button class="btn-video" onclick="playVideo('te-flexao', 'Flexão no Solo')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Superman</h4><p>Intervalo: 2 Min (Fim da volta)</p></div><div class="ex-sets">15 Reps</div></div><button class="btn-video" onclick="playVideo('te-superman', 'Superman')"><i class="ph ph-play-circle"></i> Play Vídeo</button></div>
+                </div>
+            </div>
+
+            <div class="workout-day"><div class="workout-header" onclick="toggleWorkout(this)" style="border-left: 4px solid var(--accent);"><h3><span style="background:var(--accent); color:#FFF;"><i class="ph ph-sneaker"></i></span> Planilha 5KM</h3><i class="ph ph-caret-down"></i></div>
+                <div class="workout-content">
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Terça: Int. 1:1</h4><p>Aquec. 5m (Z1) | 14x [1m (Z3) / 1m (Z1)]</p></div></div><button class="btn-video" onclick="playVideo('cor-terca', 'Corrida Terça')"><i class="ph ph-play-circle"></i> Play Dicas de Corrida</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Quinta: Int. 2:1</h4><p>Aquec. 5m (Z1) | 10x [2m (Z3) / 1m (Z1)]</p></div></div><button class="btn-video" onclick="playVideo('cor-quinta', 'Corrida Quinta')"><i class="ph ph-play-circle"></i> Play Dicas de Corrida</button></div>
+                    <div class="exercise"><div class="ex-header"><div class="ex-details"><h4>Sábado: Int. 3:1</h4><p>Aquec. 5m (Z1) | 7x [3m (Z3) / 1m (Z1)]</p></div></div><button class="btn-video" onclick="playVideo('cor-sabado', 'Corrida Sábado')"><i class="ph ph-play-circle"></i> Play Dicas de Corrida</button></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIA E AJUSTES -->
+        <div id="sec-guia" class="section">
+            <div style="margin-bottom: 25px; text-align: center;">
+                <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600;">Ajustes & Guia</h2>
+            </div>
+            
+            <div class="card">
+                <h3 style="font-size: 15px; margin-bottom:12px; color:var(--primary); text-transform:uppercase; font-weight:700;">🤖 IA Inteligente</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px; line-height:1.6;">A sua chave já está embutida no código para funcionar no Netlify de forma invisível. Caso a IA pare no futuro, pode atualizá-la aqui:</p>
+                <div class="input-group">
+                    <input type="password" id="user-api-key" placeholder="AIza..." style="margin-bottom:10px;">
+                </div>
+                <button class="btn-submit" style="padding:12px; font-size:11px;" onclick="saveApiKey()">Atualizar Chave Manual</button>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 15px; margin-bottom:12px; color:var(--text-main); text-transform:uppercase; font-weight:700;">Vídeos Inteligentes</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px; line-height:1.6;">Cole o link do PDF no botão "Play" de cada exercício e o app salvará na memória do seu celular para as próximas vezes.</p>
+                <button class="btn-submit" style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:10px; font-size:11px;" onclick="resetVideos()">Resetar Todos os Links</button>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 15px; margin-bottom:12px; color:var(--accent); text-transform:uppercase; font-weight:700;">Zonas de Corrida</h3>
+                <ul style="list-style:none; font-size:13px; color:var(--text-muted); line-height:1.7;">
+                    <li><strong style="color:var(--text-main);">Z1 (Recuperação):</strong> 50-60%. Respiração tranquila.</li>
+                    <li><strong style="color:var(--text-main);">Z2 (Leve):</strong> 60-70%. Respiração levemente aumentada.</li>
+                    <li><strong style="color:var(--text-main);">Z3 (Limiar):</strong> 70-80%. Falar fica difícil (Corridas fortes).</li>
+                    <li><strong style="color:var(--text-main);">Z4 (Pesado):</strong> 80-90%. Ofegante, impossível falar.</li>
+                    <li><strong style="color:var(--text-main);">Z5 (Máxima):</strong> 90-100%. Insustentável.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation 4 Items -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('sec-diario', this)"><i class="ph ph-calendar-check"></i><span>Diário</span></button>
+        <button class="nav-item" onclick="switchTab('sec-treino', this)"><i class="ph ph-barbell"></i><span>Treinos</span></button>
+        <button class="nav-item" onclick="switchTab('sec-evolucao', this)"><i class="ph ph-trend-up"></i><span>Evolução</span></button>
+        <button class="nav-item" onclick="switchTab('sec-guia', this)"><i class="ph ph-gear"></i><span>Ajustes</span></button>
+    </nav>
+
+    <script>
+        const goals = {
+            emagrecer: { kcal: 1600, prot: 130, carb: 160, fat: 48 },
+            massa: { kcal: 1950, prot: 130, carb: 230, fat: 55 }
+        };
+
+        const apiKey = ""; // Regra da plataforma: mantido em branco
+        const carolsKey = "AIzaSyDtm4MqgPoPUwDZxY0RtoTYsBwNe9xt4fE"; // Chave fixa invisível
+
+        function saveApiKey() {
+            const key = document.getElementById('user-api-key').value.trim();
+            if(key) {
+                localStorage.setItem('ryca_gemini_key', key);
+                alert("Chave IA atualizada com sucesso! ✨");
+                document.getElementById('user-api-key').value = '';
+            }
+        }
+
+        const defaultMeals = {
+            "Ovos mexidos (2 un) c/ margarina": { p: 12, c: 1, f: 19 },
+            "Whey Protein (1 scoop) + Iogurte": { p: 25, c: 12, f: 2 },
+            "Panqueca de Aveia": { p: 8, c: 22, f: 5 }
+        };
+
+        let smartDatabase = JSON.parse(localStorage.getItem('premiumMeals')) || defaultMeals;
+        let evolutionData = JSON.parse(localStorage.getItem('premiumEvolution')) || [];
+        
+        let currentGoal = 'emagrecer';
+        let consumed = { prot: 0, carb: 0, fat: 0, kcal: 0 };
+        let burned = 0;
+        let feedList = [];
+
+        function init() { 
+            loadSmartFoodDropdown();
+            updateDashboard(); 
+            renderEvolution();
+            document.getElementById('evo-date').valueAsDate = new Date();
+        }
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleWorkout(headerElement) {
+            const dayCard = headerElement.parentElement;
+            dayCard.classList.toggle('open');
+            const icon = headerElement.querySelector('i.ph-caret-down, i.ph-caret-up');
+            if(dayCard.classList.contains('open')) icon.classList.replace('ph-caret-down', 'ph-caret-up');
+            else icon.classList.replace('ph-caret-up', 'ph-caret-down');
+        }
+
+        function setGoal(goalKey) {
+            currentGoal = goalKey;
+            document.querySelectorAll('.goal-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + goalKey).classList.add('active');
+            updateDashboard();
+        }
+
+        // ================= EVOLUÇÃO E BIOIMPEDÂNCIA =================
+        function addEvolution() {
+            const dateInput = document.getElementById('evo-date').value;
+            const wInput = document.getElementById('evo-weight').value;
+            const bfInput = document.getElementById('evo-bf').value;
+            const mInput = document.getElementById('evo-muscle').value;
+            const waInput = document.getElementById('evo-waist').value;
+            const hInput = document.getElementById('evo-hips').value;
+            const tInput = document.getElementById('evo-thigh').value;
+
+            if(!dateInput || !wInput) return alert("A data e o peso são obrigatórios.");
+
+            const entry = {
+                id: Date.now(),
+                date: dateInput,
+                weight: parseFloat(wInput) || 0,
+                bf: parseFloat(bfInput) || 0,
+                muscle: parseFloat(mInput) || 0,
+                waist: parseFloat(waInput) || 0,
+                hips: parseFloat(hInput) || 0,
+                thigh: parseFloat(tInput) || 0
+            };
+
+            evolutionData.unshift(entry);
+            evolutionData.sort((a, b) => new Date(b.date) - new Date(a.date));
+            localStorage.setItem('premiumEvolution', JSON.stringify(evolutionData));
+            
+            document.getElementById('evo-weight').value = '';
+            document.getElementById('evo-bf').value = '';
+            document.getElementById('evo-muscle').value = '';
+            document.getElementById('evo-waist').value = '';
+            document.getElementById('evo-hips').value = '';
+            document.getElementById('evo-thigh').value = '';
+            
+            renderEvolution();
+            alert("Avaliação salva com sucesso! ✨");
+        }
+
+        function renderEvolution() {
+            const container = document.getElementById('evolution-container');
+            container.innerHTML = '';
+
+            if(evolutionData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; margin-top:20px;">Nenhuma avaliação registrada ainda.</p>';
+                return;
+            }
+
+            evolutionData.forEach((entry, index) => {
+                let diffWeight = null; let diffWaist = null; let diffBf = null; let diffMuscle = null;
+                
+                if(index < evolutionData.length - 1) {
+                    const prev = evolutionData[index + 1];
+                    diffWeight = (entry.weight - prev.weight).toFixed(1);
+                    diffWaist = entry.waist > 0 && prev.waist > 0 ? (entry.waist - prev.waist).toFixed(1) : null;
+                    diffBf = entry.bf > 0 && prev.bf > 0 ? (entry.bf - prev.bf).toFixed(1) : null;
+                    diffMuscle = entry.muscle > 0 && prev.muscle > 0 ? (entry.muscle - prev.muscle).toFixed(1) : null;
+                }
+
+                const dateObj = new Date(entry.date);
+                const dateStr = dateObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC'});
+
+                const div = document.createElement('div');
+                div.className = 'evolution-item';
+                
+                // Lógica de Cores Inteligente
+                let weightBadge = '';
+                if(diffWeight !== null) {
+                    if(diffWeight < 0) weightBadge = `<span class="diff-badge diff-pos">${diffWeight}kg</span>`;
+                    else if(diffWeight > 0) weightBadge = `<span class="diff-badge diff-neg">+${diffWeight}kg</span>`;
+                    else weightBadge = `<span class="diff-badge diff-neutral">0kg</span>`;
+                }
+
+                let bfBadge = '';
+                if(diffBf !== null) {
+                    if(diffBf < 0) bfBadge = `<span class="diff-badge diff-pos" title="Perdeu gordura!">${diffBf}%</span>`;
+                    else if(diffBf > 0) bfBadge = `<span class="diff-badge diff-neg" title="Ganhou gordura">+${diffBf}%</span>`;
+                    else bfBadge = `<span class="diff-badge diff-neutral">0%</span>`;
+                }
+
+                let muscleBadge = '';
+                if(diffMuscle !== null) {
+                    if(diffMuscle > 0) muscleBadge = `<span class="diff-badge diff-pos" title="Ganhou músculo!">+${diffMuscle}%</span>`;
+                    else if(diffMuscle < 0) muscleBadge = `<span class="diff-badge diff-neg" title="Perdeu músculo">${diffMuscle}%</span>`;
+                    else muscleBadge = `<span class="diff-badge diff-neutral">0%</span>`;
+                }
+
+                let waistBadge = '';
+                if(diffWaist !== null) {
+                    if(diffWaist < 0) waistBadge = `<span class="diff-badge diff-pos">${diffWaist}cm</span>`;
+                    else if(diffWaist > 0) waistBadge = `<span class="diff-badge diff-neg">+${diffWaist}cm</span>`;
+                    else waistBadge = `<span class="diff-badge diff-neutral">0cm</span>`;
+                }
+
+                div.innerHTML = `
+                    <div class="evo-header">
+                        <span class="evo-date"><i class="ph ph-calendar-blank" style="color:var(--primary);"></i> ${dateStr}</span>
+                        <button class="btn-delete" onclick="deleteEvo(${entry.id})" style="font-size:16px;"><i class="ph ph-trash"></i></button>
+                    </div>
+                    <div class="evo-metrics">
+                        <div class="metric"><span class="metric-label">Peso Corporal</span><span class="metric-value">${entry.weight.toFixed(1)} kg ${weightBadge}</span></div>
+                        <div class="metric"><span class="metric-label">Gordura (BF)</span><span class="metric-value">${entry.bf ? entry.bf.toFixed(1) + ' %' : '--'} ${bfBadge}</span></div>
+                        <div class="metric"><span class="metric-label">Massa Muscular</span><span class="metric-value">${entry.muscle ? entry.muscle.toFixed(1) + ' %' : '--'} ${muscleBadge}</span></div>
+                        <div class="metric"><span class="metric-label">Cintura</span><span class="metric-value">${entry.waist ? entry.waist.toFixed(1) + ' cm' : '--'} ${waistBadge}</span></div>
+                        <div class="metric"><span class="metric-label">Quadril</span><span class="metric-value">${entry.hips ? entry.hips.toFixed(1) + ' cm' : '--'}</span></div>
+                        <div class="metric"><span class="metric-label">Coxa</span><span class="metric-value">${entry.thigh ? entry.thigh.toFixed(1) + ' cm' : '--'}</span></div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteEvo(id) {
+            if(confirm("Excluir esta avaliação permanentemente?")) {
+                evolutionData = evolutionData.filter(e => e.id !== id);
+                localStorage.setItem('premiumEvolution', JSON.stringify(evolutionData));
+                renderEvolution();
+            }
+        }
+
+        // ================= IA E REFEIÇÃO (RESOLVIDO PARA O NETLIFY) =================
+        function loadSmartFoodDropdown() {
+            const select = document.getElementById('smart-food');
+            select.innerHTML = '<option value="">Selecione ou use a IA acima...</option>';
+            for (let meal in smartDatabase) {
+                const opt = document.createElement('option');
+                opt.value = meal; opt.textContent = meal;
+                select.appendChild(opt);
+            }
+        }
+
+        async function calculateAI() {
+            const input = document.getElementById('ai-input').value.trim();
+            if(!input) return alert("Digite algo para a IA calcular!");
+
+            const btn = document.getElementById('btn-ai');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Analisando...'; btn.disabled = true;
+
+            let result = null;
+            let lastError = "";
+
+            try {
+                // A ordem de prioridade da chave: 1º Manual, 2º Fixa da Carol, 3º Injetada
+                let activeKey = localStorage.getItem('ryca_gemini_key') || carolsKey || apiKey;
+                
+                if (!activeKey) throw new Error("Chave não encontrada.");
+                
+                // Força o uso do modelo mais estável e universal (1.5 Flash)
+                let model = "gemini-1.5-flash";
+                
+                // Caso rode dentro do ambiente de preview que force a chave vazia
+                if(activeKey === apiKey && activeKey !== "") {
+                    model = "gemini-2.5-flash-preview-09-2025";
+                }
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: `Aja como nutricionista. Calcule macros aproximados da refeição: "${input}".` }] }],
+                    systemInstruction: { parts: [{ text: "Retorne APENAS um JSON estrito. Não inclua texto fora do JSON. Propriedades obrigatórias: name (nome resumido do prato), p (proteina em numero), c (carbo em numero), f (gordura em numero)." }] },
+                    generationConfig: { 
+                        responseMimeType: "application/json"
+                    }
+                };
+
+                let response;
+                // Tentativas para lidar com oscilações de internet
+                for (let i = 0; i < 3; i++) {
+                    response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if(response.ok) break;
+                    await new Promise(r => setTimeout(r, 1500));
+                }
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || "Erro na comunicação com a API.");
+                }
+
+                const data = await response.json();
+                let textResult = data.candidates[0].content.parts[0].text;
+                
+                // Limpeza por precaução
+                textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
+                result = JSON.parse(textResult);
+
+            } catch (e) {
+                lastError = e.message;
+            }
+
+            if (result) {
+                document.getElementById('food-name').value = result.name;
+                document.getElementById('food-prot').value = Math.round(result.p);
+                document.getElementById('food-carb').value = Math.round(result.c);
+                document.getElementById('food-fat').value = Math.round(result.f);
+                document.getElementById('smart-food').value = '';
+                document.getElementById('save-recipe').checked = true;
+            } else {
+                alert("Houve uma falha rápida na IA. Verifique sua conexão e tente novamente!\n(Detalhe técnico: " + lastError + ")");
+            }
+            
+            btn.innerHTML = originalText; 
+            btn.disabled = false;
+        }
+
+        function fillSmartFood() {
+            const val = document.getElementById('smart-food').value;
+            if (smartDatabase[val]) {
+                const m = smartDatabase[val];
+                document.getElementById('food-name').value = val;
+                document.getElementById('food-prot').value = m.p;
+                document.getElementById('food-carb').value = m.c;
+                document.getElementById('food-fat').value = m.f;
+                document.getElementById('save-recipe').checked = false;
+            }
+        }
+
+        function addFood() {
+            const nameInput = document.getElementById('food-name');
+            const protInput = document.getElementById('food-prot');
+            const carbInput = document.getElementById('food-carb');
+            const fatInput = document.getElementById('food-fat');
+            const saveRecipeCb = document.getElementById('save-recipe');
+
+            const name = nameInput.value.trim() || 'Refeição';
+            const p = parseFloat(protInput.value) || 0;
+            const c = parseFloat(carbInput.value) || 0;
+            const f = parseFloat(fatInput.value) || 0;
+
+            if(p === 0 && c === 0 && f === 0) return alert("Insira os macros!");
+
+            if(saveRecipeCb.checked && nameInput.value.trim()) {
+                smartDatabase[name] = { p, c, f };
+                localStorage.setItem('premiumMeals', JSON.stringify(smartDatabase));
+                loadSmartFoodDropdown();
+            }
+
+            const kcal = Math.round((p * 4) + (c * 4) + (f * 9));
+            const item = { id: Date.now(), type: 'food', name, p, c, f, kcal };
+            
+            feedList.unshift(item);
+            consumed.prot += p; consumed.carb += c; consumed.fat += f; consumed.kcal += kcal;
+
+            nameInput.value = ''; protInput.value = ''; carbInput.value = ''; fatInput.value = '';
+            document.getElementById('ai-input').value = ''; saveRecipeCb.checked = false;
+            
+            renderFeed(); updateDashboard();
+        }
+
+        // ================= ATIVIDADES =================
+        function addActivity() {
+            const selectType = document.getElementById('work-type');
+            const timeInput = document.getElementById('work-time');
+            const notesInput = document.getElementById('work-notes');
+
+            const name = selectType.value;
+            const time = parseInt(timeInput.value);
+            const notes = notesInput.value.trim();
+
+            if(isNaN(time) || time <= 0) return alert("Insira um tempo válido (minutos).");
+
+            let calPerMin = 6;
+            if(name === 'Corrida') calPerMin = 10;
+            else if(name === 'HIIT') calPerMin = 9;
+            else if(name === 'Caminhada') calPerMin = 5;
+            else if(name === 'Yoga/Alongamento') calPerMin = 3;
+
+            const kcalOut = Math.round(time * calPerMin);
+            const item = { id: Date.now(), type: 'workout', name, time, notes, kcal: kcalOut };
+            
+            feedList.unshift(item);
+            burned += kcalOut;
+
+            timeInput.value = ''; notesInput.value = '';
+            
+            renderFeed(); updateDashboard();
+        }
+
+        function removeFeedItem(id) {
+            const index = feedList.findIndex(i => i.id === id);
+            if(index > -1) {
+                const item = feedList[index];
+                if(item.type === 'food') {
+                    consumed.prot -= item.p; consumed.carb -= item.c; consumed.fat -= item.f; consumed.kcal -= item.kcal;
+                    if(consumed.prot<0) consumed.prot=0; if(consumed.carb<0) consumed.carb=0; if(consumed.fat<0) consumed.fat=0; if(consumed.kcal<0) consumed.kcal=0;
+                } else {
+                    burned -= item.kcal;
+                    if(burned<0) burned=0;
+                }
+                feedList.splice(index, 1);
+                renderFeed(); updateDashboard();
+            }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+            feedList.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'feed-item';
+                
+                if(item.type === 'food') {
+                    div.innerHTML = `
+                        <div class="feed-info">
+                            <h4><i class="ph ph-bowl-food" style="color:var(--primary);"></i> ${item.name}</h4>
+                            <p><span>PT: ${item.p}g</span> <span>CB: ${item.c}g</span> <span>GD: ${item.f}g</span></p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <span class="feed-number kcal-in">+${item.kcal} <span style="font-size:10px;font-weight:500;">KCAL</span></span>
+                            <button class="btn-delete" onclick="removeFeedItem(${item.id})"><i class="ph ph-trash"></i></button>
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="feed-info">
+                            <h4><i class="ph ph-person-simple-run" style="color:var(--accent);"></i> ${item.name}</h4>
+                            <p>⏱️ ${item.time} min ${item.notes ? `| ${item.notes}` : ''}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <span class="feed-number kcal-out">-${item.kcal} <span style="font-size:10px;font-weight:500;">KCAL</span></span>
+                            <button class="btn-delete" onclick="removeFeedItem(${item.id})"><i class="ph ph-trash"></i></button>
+                        </div>
+                    `;
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function updateDashboard() {
+            const target = goals[currentGoal];
+            document.getElementById('kcal-current').innerText = Math.round(consumed.kcal);
+            document.getElementById('kcal-max').innerText = target.kcal;
+            document.getElementById('kcal-burned').innerText = Math.round(burned);
+            
+            document.getElementById('prot-text').innerHTML = `<b>${Math.round(consumed.prot)}</b> / ${target.prot}g`;
+            document.getElementById('carb-text').innerHTML = `<b>${Math.round(consumed.carb)}</b> / ${target.carb}g`;
+            document.getElementById('fat-text').innerHTML = `<b>${Math.round(consumed.fat)}</b> / ${target.fat}g`;
+
+            const pPerc = Math.min((consumed.prot / target.prot) * 100, 100);
+            const cPerc = Math.min((consumed.carb / target.carb) * 100, 100);
+            const fPerc = Math.min((consumed.fat / target.fat) * 100, 100);
+
+            document.getElementById('bar-prot').style.width = pPerc + '%';
+            document.getElementById('bar-carb').style.width = cPerc + '%';
+            document.getElementById('bar-fat').style.width = fPerc + '%';
+        }
+
+        // ================= VÍDEOS =================
+        function playVideo(videoId, videoName) {
+            let savedLinks = JSON.parse(localStorage.getItem('premiumVideoLinks')) || {};
+            if (savedLinks[videoId] && savedLinks[videoId].trim() !== '') {
+                window.open(savedLinks[videoId], '_blank');
+            } else {
+                let userLink = prompt(`Cole o link do vídeo para "${videoName}":`);
+                if (userLink && userLink.trim() !== '') {
+                    if (!userLink.startsWith('http')) userLink = 'https://' + userLink;
+                    savedLinks[videoId] = userLink.trim();
+                    localStorage.setItem('premiumVideoLinks', JSON.stringify(savedLinks));
+                    window.open(savedLinks[videoId], '_blank');
+                }
+            }
+        }
+        
+        function resetVideos() {
+            if(confirm("Apagar todos os links de vídeos salvos?")) {
+                localStorage.removeItem('premiumVideoLinks');
+                alert("Links apagados. Você pode colá-los novamente quando quiser.");
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
