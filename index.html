@@ -533,16 +533,18 @@
         let feedList = [];
         let myChart = null;
 
-        // ================= INICIALIZAÇÃO IMEDIATA (CORRIGE O ERRO "NULL") =================
-        const isLoggedIn = localStorage.getItem('magicDiaryLoggedIn') === 'true';
-        if (isLoggedIn) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-content').style.display = 'block';
-            init();
-        } else {
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('app-content').style.display = 'none';
-        }
+        // ================= INICIALIZAÇÃO SEGURA (CORRIGE O ERRO DE TELA BRANCA/NULL) =================
+        window.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('magicDiaryLoggedIn') === 'true';
+            if (isLoggedIn) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-content').style.display = 'block';
+                init();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app-content').style.display = 'none';
+            }
+        });
 
         // ================= SISTEMA DE LOGIN =================
         function fazerLogin() {
@@ -809,7 +811,12 @@
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const response = await fetch(url, options);
-                    if (response.ok) return response;
+                    if (response.ok) {
+                        return response;
+                    }
+                    if (i === maxRetries - 1) {
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
                 } catch (err) {
                     if (i === maxRetries - 1) throw err;
                 }
@@ -831,9 +838,21 @@
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
                 
                 const payload = {
-                    contents: [{ parts: [{ text: `Aja como nutricionista. Calcule macros aproximados da refeição: "${input}".` }] }],
-                    systemInstruction: { parts: [{ text: "Retorne APENAS um JSON estrito. Propriedades obrigatórias: name (nome resumido do prato), p (proteina em numero), c (carbo em numero), f (gordura em numero). Nao use blocos de codigo markdown." }] },
-                    generationConfig: { responseMimeType: "application/json" }
+                    contents: [{ parts: [{ text: `Calcule as calorias e os macronutrientes da seguinte refeição: "${input}"` }] }],
+                    systemInstruction: { parts: [{ text: "Você é um assistente nutricional. Retorne os dados em formato JSON estrito." }] },
+                    generationConfig: { 
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING" },
+                                p: { type: "INTEGER" },
+                                c: { type: "INTEGER" },
+                                f: { type: "INTEGER" }
+                            },
+                            required: ["name", "p", "c", "f"]
+                        }
+                    }
                 };
 
                 const response = await fetchWithBackoff(url, { 
@@ -843,25 +862,27 @@
                 });
 
                 const data = await response.json();
-                let textResult = data.candidates[0].content.parts[0].text;
-                textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
+                const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!textResult) throw new Error("A varinha mágica ficou sem energia.");
+                
                 const result = JSON.parse(textResult);
 
-                if (result) {
+                if (result && result.name) {
                     document.getElementById('food-name').value = result.name;
-                    document.getElementById('food-prot').value = Math.round(result.p);
-                    document.getElementById('food-carb').value = Math.round(result.c);
-                    document.getElementById('food-fat').value = Math.round(result.f);
+                    document.getElementById('food-prot').value = Math.round(result.p || 0);
+                    document.getElementById('food-carb').value = Math.round(result.c || 0);
+                    document.getElementById('food-fat').value = Math.round(result.f || 0);
                     document.getElementById('smart-food').value = '';
                     document.getElementById('save-recipe').checked = true;
                 }
             } catch (e) {
                 console.error(e);
                 alert("A magia falhou! Tente novamente mais tarde. ✨");
+            } finally {
+                btn.innerHTML = originalText; 
+                btn.disabled = false;
             }
-            
-            btn.innerHTML = originalText; 
-            btn.disabled = false;
         }
 
         function fillSmartFood() {
@@ -994,26 +1015,48 @@
         function updateDashboard() {
             const target = goals[currentGoal];
             
-            document.getElementById('kcal-current').innerText = Math.round(consumed.kcal);
-            document.getElementById('kcal-max').innerText = target.kcal;
-            document.getElementById('kcal-burned').innerText = Math.round(burned);
+            const kcalCurrentEl = document.getElementById('kcal-current');
+            if(kcalCurrentEl) kcalCurrentEl.innerText = Math.round(consumed.kcal);
             
-            document.getElementById('prot-text').innerHTML = `<b>${Math.round(consumed.prot)}</b> / ${target.prot}g`;
-            document.getElementById('carb-text').innerHTML = `<b>${Math.round(consumed.carb)}</b> / ${target.carb}g`;
-            document.getElementById('fat-text').innerHTML = `<b>${Math.round(consumed.fat)}</b> / ${target.fat}g`;
+            const kcalMaxEl = document.getElementById('kcal-max');
+            if(kcalMaxEl) kcalMaxEl.innerText = target.kcal;
+            
+            const kcalBurnedEl = document.getElementById('kcal-burned');
+            if(kcalBurnedEl) kcalBurnedEl.innerText = Math.round(burned);
+            
+            const protTextEl = document.getElementById('prot-text');
+            if(protTextEl) protTextEl.innerHTML = `<b>${Math.round(consumed.prot)}</b> / ${target.prot}g`;
+            
+            const carbTextEl = document.getElementById('carb-text');
+            if(carbTextEl) carbTextEl.innerHTML = `<b>${Math.round(consumed.carb)}</b> / ${target.carb}g`;
+            
+            const fatTextEl = document.getElementById('fat-text');
+            if(fatTextEl) fatTextEl.innerHTML = `<b>${Math.round(consumed.fat)}</b> / ${target.fat}g`;
 
             const pPerc = Math.min((consumed.prot / target.prot) * 100, 100);
             const cPerc = Math.min((consumed.carb / target.carb) * 100, 100);
             const fPerc = Math.min((consumed.fat / target.fat) * 100, 100);
 
-            document.getElementById('bar-prot').style.width = pPerc + '%';
-            document.getElementById('bar-carb').style.width = cPerc + '%';
-            document.getElementById('bar-fat').style.width = fPerc + '%';
+            const barProtEl = document.getElementById('bar-prot');
+            if(barProtEl) barProtEl.style.width = pPerc + '%';
+            
+            const barCarbEl = document.getElementById('bar-carb');
+            if(barCarbEl) barCarbEl.style.width = cPerc + '%';
+            
+            const barFatEl = document.getElementById('bar-fat');
+            if(barFatEl) barFatEl.style.width = fPerc + '%';
 
-            document.getElementById('workout-days-count').innerText = workoutDaysSet.size + (workoutDaysSet.size === 1 ? ' dia' : ' dias');
-            document.getElementById('prog-kcal-current').innerText = Math.round(consumed.kcal);
-            document.getElementById('prog-kcal-max').innerText = target.kcal;
-            document.getElementById('prog-kcal-bar').style.width = Math.min((consumed.kcal / target.kcal) * 100, 100) + '%';
+            const workoutDaysCountEl = document.getElementById('workout-days-count');
+            if(workoutDaysCountEl) workoutDaysCountEl.innerText = workoutDaysSet.size + (workoutDaysSet.size === 1 ? ' dia' : ' dias');
+            
+            const progKcalCurrentEl = document.getElementById('prog-kcal-current');
+            if(progKcalCurrentEl) progKcalCurrentEl.innerText = Math.round(consumed.kcal);
+            
+            const progKcalMaxEl = document.getElementById('prog-kcal-max');
+            if(progKcalMaxEl) progKcalMaxEl.innerText = target.kcal;
+            
+            const progKcalBarEl = document.getElementById('prog-kcal-bar');
+            if(progKcalBarEl) progKcalBarEl.style.width = Math.min((consumed.kcal / target.kcal) * 100, 100) + '%';
         }
 
     </script>
