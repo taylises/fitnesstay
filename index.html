@@ -4,42 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- TAGS PARA IPHONE (PWA) - PARA SUMIR A BARRA DE DOMÍNIO -->
+    <!-- MÁGICA PARA IPHONE: TELA CHEIA E STATUS BAR -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#FDF5F7">
     <meta name="apple-mobile-web-app-title" content="Grimório">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
 
     <title>Diário Mágico - Taylise</title>
     
-    <!-- Ícones e Gráficos -->
+    <!-- Bibliotecas Premium -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Paleta Rosinha Mágica Detalhada */
+            /* Paleta Mágica Luxuosa */
             --bg-main: #FDF5F7; 
-            --bg-card: rgba(255, 255, 255, 0.88); 
-            --text-main: #5D4050; 
-            --text-muted: #A68A99; 
+            --bg-card: rgba(255, 255, 255, 0.82); 
+            --text-main: #4A303F; 
+            --text-muted: #9E7F8F; 
             
-            --primary: #FF85A1; 
-            --primary-hover: #FF9EB5;
-            --secondary: #FFC4D1; 
-            --accent: #AEE1E1; 
-            --danger: #FF8C8C; 
+            --primary: #FF85A1; /* Rosa Mágico Intenso */
+            --primary-glow: rgba(255, 133, 161, 0.5);
+            --secondary: #D4A5FF; /* Lilás Feitiço */
+            --accent: #7DE2D1; /* Menta Cristal */
+            --gold: #FFD700;
             
             --prot-color: #FF85A1; 
-            --carb-color: #AEE1E1;
-            --fat-color: #FFC4D1;
+            --carb-color: #7DE2D1;
+            --fat-color: #D4A5FF;
 
-            --shadow-magic: 0 10px 40px rgba(255, 133, 161, 0.2);
-            --border-magic: 2px solid rgba(255, 133, 161, 0.25);
-            --glow-primary: 0 0 15px rgba(255, 133, 161, 0.4);
+            --shadow-magic: 0 20px 40px rgba(255, 133, 161, 0.2);
+            --border-magic: 2px solid rgba(255, 255, 255, 0.9);
+            --inner-glow: inset 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -48,269 +48,212 @@
             font-family: 'Nunito', sans-serif; 
             color: var(--text-main); 
             min-height: 100vh; 
-            padding-bottom: 110px;
-            background: linear-gradient(-45deg, #FDF5F7, #FFEBF0, #FFF5F7, #FDECF0);
+            padding-bottom: 120px;
+            background: linear-gradient(-45deg, #FDF5F7, #FFECF2, #F5F1FF, #FDF5F7);
             background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
+            animation: gradientBG 15s ease infinite;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* --- BRILHINHOS DE FUNDO --- */
-        body::before {
-            content: '✨'; position: fixed; top: 10%; left: 5%; font-size: 20px; animation: floating 4s infinite; opacity: 0.4; pointer-events: none;
-        }
-        body::after {
-            content: '🌸'; position: fixed; bottom: 20%; right: 5%; font-size: 24px; animation: floating 6s infinite reverse; opacity: 0.3; pointer-events: none;
-        }
+        /* --- PARTICULAS DE BRILHO --- */
+        .sparkle-bg { position: fixed; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .p { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite; opacity: 0; }
+        @keyframes twinkle { 0%, 100% { opacity: 0; transform: translateY(0); } 50% { opacity: 0.7; transform: translateY(-20px); } }
 
-        h1, h2, h3, h4 { font-family: 'Quicksand', sans-serif; }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes floating {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(10deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-
-        @keyframes sparkle-glow {
-            0%, 100% { opacity: 0.5; filter: brightness(1); }
-            50% { opacity: 1; filter: brightness(1.3) drop-shadow(0 0 8px var(--primary)); }
-        }
-
-        .float-icon { animation: floating 3s ease-in-out infinite; display: inline-block; }
-        .sparkle-effect { animation: sparkle-glow 2s infinite ease-in-out; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .float { animation: floating 4s ease-in-out infinite; }
 
         /* --- TELA DE LOGIN --- */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
+        #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 25px; }
         .login-card { 
-            background: var(--bg-card); 
-            backdrop-filter: blur(20px); 
-            padding: 45px 35px; 
-            border-radius: 40px; 
-            box-shadow: var(--shadow-magic); 
-            width: 100%; 
-            max-width: 400px; 
-            border: var(--border-magic); 
-            position: relative;
+            background: var(--bg-card); backdrop-filter: blur(25px); padding: 50px 30px; 
+            border-radius: 50px; box-shadow: var(--shadow-magic); width: 100%; 
+            max-width: 420px; border: var(--border-magic); text-align: center;
         }
-        .login-card::after {
-            content: ''; position: absolute; -z-index: 1; top: -2px; left: -2px; right: -2px; bottom: -2px; background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent)); border-radius: 42px; opacity: 0.3; pointer-events: none;
-        }
-        .login-icon { font-size: 70px; color: var(--primary); margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255, 133, 161, 0.4)); }
-        .login-title { font-size: 38px; font-weight: 800; margin-bottom: 5px; color: var(--text-main); font-family: 'Quicksand'; text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .login-icon { font-size: 80px; color: var(--primary); filter: drop-shadow(0 0 15px var(--primary-glow)); margin-bottom: 20px; }
         
         .cute-input { 
-            width: 100%; padding: 18px; margin-bottom: 15px; border-radius: 20px; 
-            border: 2px solid rgba(255, 133, 161, 0.15); font-family: 'Nunito'; 
-            font-size: 15px; color: var(--text-main); font-weight: 700; background: #FFF; 
-            outline: none; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%; padding: 20px; margin-bottom: 20px; border-radius: 25px; 
+            border: 2.5px solid rgba(255, 133, 161, 0.15); font-family: 'Nunito'; 
+            font-size: 16px; font-weight: 700; background: #FFF; outline: none; transition: 0.4s;
+            box-shadow: var(--inner-glow);
         }
-        .cute-input:focus { border-color: var(--primary); box-shadow: var(--glow-primary); transform: translateY(-2px); }
-        
+        .cute-input:focus { border-color: var(--primary); box-shadow: 0 0 25px var(--primary-glow); transform: scale(1.02); }
+
         .cute-btn { 
-            width: 100%; padding: 18px; border-radius: 22px; border: none; 
-            background: linear-gradient(135deg, var(--primary), #FF6B8E); color: #FFF; 
-            font-family: 'Quicksand'; font-size: 16px; font-weight: 800; cursor: pointer; 
-            box-shadow: 0 8px 25px rgba(255, 133, 161, 0.4); display: flex; 
-            justify-content: center; align-items: center; gap: 8px; margin-top: 10px; 
+            width: 100%; padding: 20px; border-radius: 25px; border: none; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: #FFF; font-family: 'Quicksand'; font-size: 18px; font-weight: 800; 
+            cursor: pointer; box-shadow: 0 12px 30px rgba(255, 133, 161, 0.4); 
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
-        .cute-btn:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 30px rgba(255, 133, 161, 0.5); }
-        .cute-btn:active { transform: translateY(0) scale(0.98); }
+        .cute-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(255, 133, 161, 0.5); }
 
-        /* --- CONTEÚDO PRINCIPAL --- */
+        /* --- APP PRINCIPAL --- */
         #app-content { display: none; }
 
         header { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(15px); 
-            padding: 50px 20px 30px; 
-            text-align: center; 
-            border-bottom-left-radius: 45px; 
-            border-bottom-right-radius: 45px; 
-            box-shadow: 0 15px 40px rgba(255, 133, 161, 0.12); 
-            margin-bottom: 30px; 
-            border-bottom: var(--border-magic); 
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); padding: 60px 20px 40px; 
+            text-align: center; border-bottom-left-radius: 55px; border-bottom-right-radius: 55px; 
+            box-shadow: 0 15px 50px rgba(255, 133, 161, 0.15); border-bottom: var(--border-magic);
         }
-        header h1 { font-family: 'Quicksand'; font-size: 34px; font-weight: 800; color: var(--text-main); text-shadow: 0 2px 10px rgba(255, 133, 161, 0.2); }
         .header-tag { 
-            font-size: 13px; font-weight: 800; color: #FFF; background: linear-gradient(90deg, var(--primary), var(--primary-hover)); 
-            padding: 8px 20px; border-radius: 25px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; 
-            box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3);
+            background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #FFF; 
+            padding: 8px 25px; border-radius: 30px; font-weight: 800; font-size: 12px; 
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(255, 133, 161, 0.3);
         }
+        header h1 { font-family: 'Quicksand'; font-size: 34px; font-weight: 800; color: var(--text-main); }
 
         .container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
-        .section { display: none; animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .section { display: none; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
         .section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { 
-            background: var(--bg-card); backdrop-filter: blur(15px); border-radius: 35px; 
-            padding: 28px; margin-bottom: 25px; box-shadow: var(--shadow-magic); 
-            border: var(--border-cute); transition: 0.3s; position: relative; overflow: hidden;
+            background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 45px; 
+            padding: 35px; margin-bottom: 30px; box-shadow: var(--shadow-magic); 
+            border: var(--border-magic); position: relative;
         }
-        .card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        
-        .card-title { font-family: 'Quicksand'; font-size: 22px; margin-bottom: 22px; font-weight: 800; display: flex; align-items: center; gap: 12px; color: var(--text-main); }
-        .card-title i { color: var(--primary); filter: drop-shadow(0 2px 5px rgba(255,133,161,0.3)); }
+        .card-title { font-family: 'Quicksand'; font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .card-title i { color: var(--primary); filter: drop-shadow(0 0 8px var(--primary-glow)); }
 
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 25px; }
         .summary-box { 
-            background: linear-gradient(135deg, #FFF, #FFF5F7); padding: 18px; border-radius: 24px; 
-            text-align: center; border: 1.5px solid rgba(255, 133, 161, 0.15); 
-            box-shadow: inset 0 2px 10px rgba(255, 255, 255, 1), 0 4px 10px rgba(0,0,0,0.02);
+            background: #FFF; border-radius: 30px; padding: 25px; text-align: center;
+            border: 2px solid rgba(255, 133, 161, 0.1); box-shadow: inset 0 2px 10px rgba(255,255,255,1);
         }
-        .summary-box span { font-weight: 800; font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
-        .summary-box strong { font-size: 34px; font-weight: 800; color: var(--text-main); display: block; margin-top: 5px; }
+        .summary-box strong { font-size: 42px; font-weight: 800; color: var(--text-main); line-height: 1; }
 
-        .macro-row { margin-bottom: 18px; }
-        .progress-bg { background: #F0EDF0; height: 16px; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.03); }
+        .progress-bg { background: #F0F0F0; height: 18px; border-radius: 20px; overflow: hidden; position: relative; border: 1.5px solid rgba(0,0,0,0.03); }
         .progress-fill { 
-            height: 100%; border-radius: 12px; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); 
-            position: relative; box-shadow: inset 0 1px 3px rgba(255,255,255,0.4);
+            height: 100%; border-radius: 20px; transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1); 
+            position: relative; box-shadow: inset 0 2px 6px rgba(255,255,255,0.4);
         }
-        .progress-fill::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: moveShimmer 2s infinite linear;
-        }
-        @keyframes moveShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        .input-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .ai-group { 
-            background: linear-gradient(135deg, rgba(255, 133, 161, 0.1), rgba(255, 196, 209, 0.05)); 
-            padding: 24px; border-radius: 28px; border: 2px dashed var(--primary); margin-bottom: 25px; 
-            position: relative;
+            background: linear-gradient(135deg, rgba(255, 133, 161, 0.15), rgba(212, 165, 255, 0.1)); 
+            padding: 30px; border-radius: 40px; border: 3px dashed var(--primary); margin-bottom: 30px;
         }
-        .ai-group label { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--primary); margin-bottom: 12px; font-size: 13px; text-transform: uppercase; }
 
         .feed-item { 
-            display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; 
-            background: #FFF; border-radius: 24px; margin-bottom: 12px; border: 1.5px solid rgba(255, 133, 161, 0.1); 
-            box-shadow: 0 4px 15px rgba(255, 133, 161, 0.05); transition: 0.3s;
+            background: #FFF; padding: 25px; border-radius: 35px; margin-bottom: 15px; 
+            border: 1.5px solid rgba(255, 133, 161, 0.12); display: flex; 
+            justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(255,133,161,0.05);
+            transition: 0.3s;
         }
-        .feed-item:hover { transform: translateX(8px); border-color: var(--primary); background: #FFF9FA; }
-        
+        .feed-item:hover { transform: scale(1.02); border-color: var(--primary); }
+
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.94); 
-            backdrop-filter: blur(15px); display: flex; justify-content: space-around; 
-            padding: 15px 10px 28px; border-top: var(--border-magic); z-index: 100; 
-            border-top-left-radius: 35px; border-top-right-radius: 35px;
-            box-shadow: 0 -5px 25px rgba(255, 133, 161, 0.1);
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.96); 
+            backdrop-filter: blur(25px); display: flex; justify-content: space-around; 
+            padding: 15px 10px 40px; border-top: var(--border-magic); z-index: 9999; 
+            border-top-left-radius: 45px; border-top-right-radius: 45px;
+            box-shadow: 0 -10px 50px rgba(255, 133, 161, 0.15);
         }
-        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; transition: 0.3s; }
-        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
-        .nav-item.active i { filter: drop-shadow(0 0 8px rgba(255, 133, 161, 0.6)); }
-        .nav-item i { font-size: 28px; }
+        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; transition: 0.4s; }
+        .nav-item.active { color: var(--primary); transform: translateY(-10px); }
+        .nav-item i { font-size: 32px; }
 
         .workout-header { 
-            background: #FFF; padding: 22px; border-radius: 24px; border: 1.5px solid rgba(255, 133, 161, 0.1); 
-            cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
-            font-weight: 800; transition: 0.3s;
+            background: #FFF; padding: 25px; border-radius: 35px; border: 2px solid rgba(255, 133, 161, 0.15);
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
         }
-        .workout-header:hover { background: #FFF9FA; box-shadow: 0 4px 12px rgba(255,133,161,0.1); }
         .open .workout-header { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-color: var(--primary); }
+        .workout-content { background: rgba(255, 255, 255, 0.5); border-radius: 0 0 35px 35px; border: 2px solid var(--primary); border-top: none; padding: 20px; display: none; }
 
-        .btn-video { 
-            color: var(--primary); font-weight: 800; font-size: 12px; text-decoration: none; 
-            display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; 
-            padding: 8px 14px; background: rgba(255, 133, 161, 0.08); border-radius: 12px; transition: 0.2s;
+        .btn-yt { 
+            background: var(--primary); color: #FFF; padding: 12px 20px; border-radius: 18px; 
+            text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: 800;
+            box-shadow: 0 5px 15px var(--primary-glow); font-size: 13px;
         }
-        .btn-video:hover { background: var(--primary); color: #FFF; transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <!-- 1. TELA DE LOGIN -->
+    <div class="sparkle-bg" id="sparkle-container"></div>
+
+    <!-- 1. LOGIN -->
     <div id="login-screen">
         <div class="login-card">
-            <div class="login-content">
-                <i class="ph-fill ph-sparkle login-icon sparkle-effect"></i>
-                <h1 class="login-title">Diário Mágico</h1>
-                <p class="login-subtitle" style="color: var(--text-muted); font-weight: 700;">Nutrição & Magia de Luz 🌸</p>
-                <div style="margin-top: 35px;">
-                    <input type="email" id="email" class="cute-input" placeholder="Seu e-mail místico">
-                    <input type="password" id="password" class="cute-input" placeholder="Sua senha secreta">
-                    <button class="cute-btn" onclick="window.fazerLogin()"><i class="ph-bold ph-magic-wand"></i> Entrar no Diário</button>
-                    <button class="cute-btn btn-outline" onclick="window.criarConta()" style="background:transparent; color:var(--primary); border:2.5px solid var(--primary); margin-top:15px; box-shadow:none;">Criar Nova Conta</button>
-                </div>
+            <i class="ph-fill ph-sparkle login-icon float"></i>
+            <h1 class="login-title">Diário Mágico</h1>
+            <p style="font-weight: 800; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase;">Grimório de Taylise 🌸</p>
+            <div style="margin-top: 40px;">
+                <input type="email" id="email" class="cute-input" placeholder="Seu e-mail">
+                <input type="password" id="password" class="cute-input" placeholder="Sua senha">
+                <button class="cute-btn" onclick="window.fazerLogin()">Desvendar Diário</button>
+                <button class="cute-btn" onclick="window.criarConta()" style="background:transparent; color:var(--primary); border:3.5px solid var(--primary); margin-top:20px; box-shadow:none;">Criar Nova Conta</button>
             </div>
         </div>
     </div>
 
-    <!-- 2. APP PRINCIPAL -->
+    <!-- 2. APP -->
     <div id="app-content">
         <header>
-            <span class="header-tag"><i class="ph-fill ph-book-bookmark sparkle-effect"></i> Meu Grimório Rosa</span>
-            <h1>Taylise Caroline <i class="ph-fill ph-moon-stars float-icon" style="color: var(--primary); font-size: 26px;"></i></h1>
-            <p class="subtitle">Bruxinha da Luz 🌸 Atleta Híbrida</p>
+            <span class="header-tag"><i class="ph-fill ph-book-bookmark"></i> O GRIMÓRIO ROSA</span>
+            <h1>Taylise Caroline <i class="ph-fill ph-moon-stars float" style="color: var(--primary); font-size: 28px;"></i></h1>
+            <p style="font-weight: 800; color: var(--text-muted); margin-top: 5px;">Atleta Híbrida 🌸 Bruxinha da Luz</p>
         </header>
 
         <div class="container">
             <!-- DIÁRIO -->
             <div id="sec-diario" class="section active">
                 <div class="goal-selector">
-                    <button class="goal-btn active" id="btn-emagrecer" onclick="window.setGoal('emagrecer')">Definir Corpo</button>
-                    <button class="goal-btn" id="btn-massa" onclick="window.setGoal('massa')">Hipertrofia</button>
+                    <button class="goal-btn active" onclick="window.setGoal('emagrecer', this)">Definir Corpo</button>
+                    <button class="goal-btn" onclick="window.setGoal('massa', this)">Hipertrofia</button>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title"><i class="ph-fill ph-trend-up sparkle-effect"></i> Seu Progresso Mágico</h3>
+                    <h3 class="card-title"><i class="ph-fill ph-shooting-star"></i> Destino e Foco</h3>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 800; color: var(--text-muted);">Dias de Ritual 🏆</span>
-                        <strong id="workout-days-count" style="font-size: 20px; color: var(--primary);">0 dias</strong>
+                        <span style="font-weight: 800; color: var(--text-muted);">Dias de Treino 🏆</span>
+                        <strong id="workout-days-count" style="font-size: 26px; color: var(--primary);">0 dias</strong>
                     </div>
-                    <div style="margin-top: 20px;">
-                        <span style="font-weight: 800; color: var(--text-muted); font-size: 13px;">Energia Consumida Hoje ✨</span>
-                        <div class="progress-bg" style="margin-top:10px;"><div class="progress-fill" id="prog-kcal-bar" style="width:0%; background: linear-gradient(90deg, var(--primary), var(--primary-hover));"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:8px; font-weight:800;">
+                    <div style="margin-top: 25px;">
+                        <span style="font-weight: 800; color: var(--text-muted); font-size: 13px;">Energia das Estrelas (Kcal) ✨</span>
+                        <div class="progress-bg"><div class="progress-fill" id="prog-kcal-bar" style="width:0%; background: linear-gradient(90deg, var(--primary), var(--secondary));"></div></div>
+                        <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:800; font-size:14px;">
                             <span id="prog-kcal-current">0</span> <span id="prog-kcal-max">1600 kcal</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title"><i class="ph-fill ph-chart-pie-slice"></i> Status das Poções</h3>
+                    <h3 class="card-title"><i class="ph-fill ph-flask"></i> Poções Nutricionais</h3>
                     <div class="summary-grid">
-                        <div class="summary-box"><span>Ingestão 🌸</span><br><strong id="kcal-current">0</strong></div>
-                        <div class="summary-box"><span>Treino 🌿</span><br><strong id="kcal-burned">0</strong></div>
+                        <div class="summary-box"><span>Ingestão</span><br><strong id="kcal-current">0</strong></div>
+                        <div class="summary-box"><span>Queimado</span><br><strong id="kcal-burned">0</strong></div>
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:15px;">
+                    <div style="display:flex; flex-direction:column; gap:18px;">
                         <div>
-                            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:800; margin-bottom:6px;"><span>Proteína 🥚</span><span id="prot-text">0/130g</span></div>
-                            <div class="progress-bg"><div class="progress-fill p-prot" id="bar-prot" style="width:0%; background: var(--prot-color); box-shadow: 0 0 10px rgba(255,133,161,0.3);"></div></div>
+                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:13px; margin-bottom:8px;"><span>Proteína 🥚</span><span id="prot-text">0/130g</span></div>
+                            <div class="progress-bg"><div class="progress-fill" id="bar-prot" style="width:0%; background: var(--prot-color);"></div></div>
                         </div>
                         <div>
-                            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:800; margin-bottom:6px;"><span>Carbo 🍞</span><span id="carb-text">0/160g</span></div>
-                            <div class="progress-bg"><div class="progress-fill p-carb" id="bar-carb" style="width:0%; background: var(--carb-color); box-shadow: 0 0 10px rgba(174,225,225,0.4);"></div></div>
+                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:13px; margin-bottom:8px;"><span>Carbo 🍞</span><span id="carb-text">0/160g</span></div>
+                            <div class="progress-bg"><div class="progress-fill" id="bar-carb" style="width:0%; background: var(--carb-color);"></div></div>
                         </div>
                         <div>
-                            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:800; margin-bottom:6px;"><span>Gordura 🥑</span><span id="fat-text">0/48g</span></div>
-                            <div class="progress-bg"><div class="progress-fill p-fat" id="bar-fat" style="width:0%; background: var(--fat-color); box-shadow: 0 0 10px rgba(255,196,209,0.4);"></div></div>
+                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:13px; margin-bottom:8px;"><span>Gordura 🥑</span><span id="fat-text">0/48g</span></div>
+                            <div class="progress-bg"><div class="progress-fill" id="bar-fat" style="width:0%; background: var(--fat-color);"></div></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="ai-group">
-                        <label><i class="ph-fill ph-magic-wand sparkle-effect"></i> Varinha da Nutrição</label>
-                        <textarea id="ai-input" class="cute-input" rows="2" placeholder="O que você comeu? Ex: Panqueca de aveia e 1 banana..."></textarea>
-                        <button class="cute-btn" style="padding:14px; font-size:14px; background: var(--text-main);" onclick="window.calculateAI()">Lançar Feitiço (Adivinhar)</button>
+                        <label><i class="ph-fill ph-magic-wand"></i> Oráculo da Nutrição</label>
+                        <textarea id="ai-input" class="cute-input" rows="2" placeholder="O que você comeu hoje? ✨"></textarea>
+                        <button class="cute-btn" style="padding:15px; font-size:15px; background: #333;" onclick="window.calculateAI()">Consultar Oráculo</button>
                     </div>
-                    <input type="text" id="food-name" class="cute-input" placeholder="Nome do Prato">
+                    <input type="text" id="food-name" class="cute-input" placeholder="Nome do Alimento">
                     <div class="input-row">
                         <input type="number" id="food-prot" class="cute-input" placeholder="PT">
                         <input type="number" id="food-carb" class="cute-input" placeholder="CB">
                         <input type="number" id="food-fat" class="cute-input" placeholder="GD">
                     </div>
-                    <button class="cute-btn" onclick="window.addFood()"><i class="ph-bold ph-plus"></i> Guardar no Grimório</button>
+                    <button class="cute-btn" onclick="window.addFood()"><i class="ph-bold ph-plus-circle"></i> Gravar no Grimório</button>
                 </div>
 
                 <div class="card">
@@ -320,46 +263,38 @@
                         <option value="Corrida">Corrida 🏃</option>
                         <option value="HIIT">HIIT / Funcional ⚡</option>
                     </select>
-                    <input type="number" id="work-time" class="cute-input" placeholder="Tempo de Ritual (minutos)">
-                    <button class="cute-btn btn-accent" onclick="window.addActivity()">Finalizar Ritual</button>
+                    <input type="number" id="work-time" class="cute-input" placeholder="Tempo (minutos)">
+                    <button class="cute-btn" style="background: var(--accent); color: #0D261F;" onclick="window.addActivity()">Concluir Ritual</button>
                 </div>
 
-                <h2 class="feed-header"><i class="ph-fill ph-sparkle sparkle-effect"></i> Linha do Tempo</h2>
+                <h2 style="font-family:'Quicksand'; font-weight:800; margin: 30px 0 15px; font-size:26px;">Caminho Traçado 🌸</h2>
                 <div id="feed-container"></div>
             </div>
 
             <!-- TREINOS -->
             <div id="sec-treino" class="section">
-                <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--bg-card), #FFF5F7);">
-                    <h2 style="font-family: 'Quicksand'; font-size: 26px; font-weight: 800;">Sua Planilha 🌸</h2>
-                    <p style="font-weight: 700; color: var(--text-muted); margin-top: 5px;">Atleta Híbrida em Casa</p>
+                <div class="card" style="text-align: center; background: linear-gradient(135deg, #FFF, #FFEBF0);">
+                    <h2 style="font-family: 'Quicksand'; font-size: 30px; font-weight: 800;">Sua Planilha 🌸</h2>
+                    <p style="font-weight: 800; color: var(--text-muted); margin-top: 5px;">TIME HÍBRIDO 5 DIAS</p>
                 </div>
                 <div id="workouts-list"></div>
             </div>
 
             <!-- EVOLUÇÃO -->
             <div id="sec-evolucao" class="section">
-                <div class="profile-card">
-                    <div class="profile-avatar">TC</div>
-                    <div class="profile-data">
-                        <h3>Taylise Caroline</h3>
-                        <p>Objetivo: Transmutação Corporal ✨</p>
-                    </div>
-                </div>
-
                 <div class="card">
-                    <h3 class="card-title"><i class="ph-fill ph-ruler"></i> Nova Pesagem</h3>
+                    <h3 class="card-title"><i class="ph-fill ph-ruler"></i> Nova Profecia</h3>
                     <input type="date" id="evo-date" class="cute-input">
                     <div class="input-row">
                         <input type="number" id="evo-weight" class="cute-input" placeholder="Peso kg">
                         <input type="number" id="evo-bf" class="cute-input" placeholder="BF %">
                         <input type="number" id="evo-waist" class="cute-input" placeholder="Cintura">
                     </div>
-                    <button class="cute-btn" onclick="window.addEvolution()">Salvar Registro 🌸</button>
+                    <button class="cute-btn" onclick="window.addEvolution()">Salvar Transmutação ✨</button>
                 </div>
-                <div class="card" style="padding: 20px 10px;">
-                    <h3 class="card-title" style="padding-left: 15px;"><i class="ph-fill ph-chart-line-up sparkle-effect"></i> Curva de Evolução</h3>
-                    <div class="chart-container"><canvas id="evolutionChart"></canvas></div>
+                <div class="card" style="padding: 25px 10px;">
+                    <h3 class="card-title" style="padding-left: 20px;"><i class="ph-fill ph-chart-line-up"></i> Sua Jornada</h3>
+                    <div style="height: 220px;"><canvas id="evolutionChart"></canvas></div>
                 </div>
                 <div id="evolution-container"></div>
             </div>
@@ -367,9 +302,9 @@
             <!-- AJUSTES -->
             <div id="sec-guia" class="section">
                 <div class="card" style="text-align: center;">
-                    <h3 class="card-title" style="justify-content:center;"><i class="ph-fill ph-gear"></i> Ajustes do Grimório</h3>
-                    <p style="font-size:14px; font-weight: 700; color: var(--text-muted); margin-bottom:25px;">Sincronizado na nuvem ☁️</p>
-                    <button class="cute-btn btn-outline" style="border-color:var(--danger); color:var(--danger); background:transparent; font-weight: 800;" onclick="window.fazerLogout()">Fechar Grimório (Sair)</button>
+                    <h3 class="card-title" style="justify-content:center;"><i class="ph-fill ph-gear"></i> Selos de Segurança</h3>
+                    <p style="font-weight: 800; color: var(--text-muted); margin-bottom:30px;">Sincronizado na Nuvem ☁️</p>
+                    <button class="cute-btn" style="background:var(--danger);" onclick="window.fazerLogout()">Fechar Grimório (Sair)</button>
                 </div>
             </div>
         </div>
@@ -403,22 +338,25 @@
         const geminiKey = "AIzaSyDtm4MqgPoPUwDZxY0RtoTYsBwNe9xt4fE";
 
         let userId = null;
-        let userData = {
-            feedList: [],
-            evolutionData: [],
-            workoutDays: [],
-            currentGoal: 'emagrecer',
-            consumed: { p:0, c:0, f:0, kcal:0 },
-            burned: 0,
-            lastDate: new Date().toDateString()
-        };
+        let userData = { feedList: [], evolutionData: [], workoutDays: [], currentGoal: 'emagrecer', consumed: { p:0, c:0, f:0, kcal:0 }, burned: 0, lastDate: new Date().toDateString() };
         let myChart = null;
+
+        const goals = { emagrecer: { kcal: 1600, p: 130, c: 160, f: 48 }, massa: { kcal: 1950, p: 130, c: 230, f: 55 } };
+
+        // --- BRILHINHOS ---
+        const container = document.getElementById('sparkle-container');
+        for(let i=0; i<30; i++){
+            const p = document.createElement('div'); p.className='p';
+            p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
+            p.style.width = p.style.height = Math.random()*4+'px';
+            p.style.setProperty('--d', (Math.random()*5+2)+'s');
+            container.appendChild(p);
+        }
 
         // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                userId = user.uid;
-                await loadData();
+                userId = user.uid; await loadData();
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-content').style.display = 'block';
                 initUI();
@@ -434,41 +372,23 @@
                 const docRef = doc(db, 'artifacts', 'diario-magico', 'users', userId);
                 const docSnap = await getDoc(docRef);
                 const today = new Date().toDateString();
-
                 if (docSnap.exists()) {
                     userData = docSnap.data();
                     if (userData.lastDate !== today) {
-                        userData.feedList = [];
-                        userData.consumed = { p:0, c:0, f:0, kcal:0 };
-                        userData.burned = 0;
-                        userData.lastDate = today;
+                        userData.feedList = []; userData.consumed = { p:0, c:0, f:0, kcal:0 }; userData.burned = 0; userData.lastDate = today;
                     }
-                } else {
-                    userData.lastDate = today;
-                    await saveData();
-                }
+                } else { userData.lastDate = today; await saveData(); }
             } catch(e) { console.error(e); }
         }
 
         async function saveData() {
             if (!userId) return;
-            try {
-                await setDoc(doc(db, 'artifacts', 'diario-magico', 'users', userId), userData, { merge: true });
-            } catch(e) { console.error(e); }
+            try { await setDoc(doc(db, 'artifacts', 'diario-magico', 'users', userId), userData, { merge: true }); } catch(e) { console.error(e); }
         }
 
         function initUI() {
-            updateDashboard();
-            renderFeed();
-            renderEvolution();
-            renderWorkouts();
-            const dateInput = document.getElementById('evo-date');
-            if(dateInput) dateInput.valueAsDate = new Date();
-            loadSmartFoodDropdown();
-        }
-
-        function loadSmartFoodDropdown() {
-            // Placeholder para refeições inteligentes salvas futuramente
+            updateDashboard(); renderFeed(); renderEvolution(); renderWorkouts();
+            const d = document.getElementById('evo-date'); if(d) d.valueAsDate = new Date();
         }
 
         function updateDashboard() {
@@ -481,11 +401,9 @@
             safeSetText('prot-text', `${Math.round(userData.consumed.p)}/${target.p}g`);
             safeSetText('carb-text', `${Math.round(userData.consumed.c)}/${target.c}g`);
             safeSetText('fat-text', `${Math.round(userData.consumed.f)}/${target.f}g`);
-            
             safeSetWidth('bar-prot', (userData.consumed.p / target.p) * 100);
             safeSetWidth('bar-carb', (userData.consumed.c / target.c) * 100);
             safeSetWidth('bar-fat', (userData.consumed.f / target.f) * 100);
-
             safeSetText('workout-days-count', `${userData.workoutDays.length} dias`);
             safeSetText('prog-kcal-current', Math.round(userData.consumed.kcal));
             safeSetText('prog-kcal-max', `${target.kcal} kcal`);
@@ -494,30 +412,21 @@
 
         window.calculateAI = async () => {
             const input = document.getElementById('ai-input').value.trim();
-            if(!input) return alert("Descreva o que comeu! 🌸");
-            
+            if(!input) return alert("Diga o que você comeu bruxinha! 🌸");
             const btn = document.querySelector('.ai-group button');
-            const originalText = btn.innerText;
-            btn.disabled = true; btn.innerText = "Consultando as Estrelas...";
-
+            const originalText = btn.innerText; btn.disabled = true; btn.innerText = "Consultando as Estrelas...";
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        contents: [{parts: [{text: `Calcule macronutrientes para: "${input}". Retorne APENAS um JSON: {"name": "nome do prato", "p": proteina, "c": carbo, "f": gordura}. Use números para p, c, f.`}]}],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiKey}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{parts: [{text: `Aja como nutricionista. Calcule macros: "${input}". Retorne APENAS um JSON puro sem markdown: {"name": "prato", "p": num, "c": num, "f": num}`}]}], generationConfig: { responseMimeType: "application/json" } })
                 });
                 const data = await res.json();
                 const result = JSON.parse(data.candidates[0].content.parts[0].text);
-                
                 document.getElementById('food-name').value = result.name;
                 document.getElementById('food-prot').value = result.p;
                 document.getElementById('food-carb').value = result.c;
                 document.getElementById('food-fat').value = result.f;
-            } catch(e) { alert("A varinha falhou. Tente detalhar melhor a refeição! ✨"); }
+            } catch(e) { alert("A varinha falhou ✨"); }
             finally { btn.disabled = false; btn.innerText = originalText; }
         };
 
@@ -525,15 +434,11 @@
             const p = parseFloat(document.getElementById('food-prot').value) || 0;
             const c = parseFloat(document.getElementById('food-carb').value) || 0;
             const f = parseFloat(document.getElementById('food-fat').value) || 0;
-            const name = document.getElementById('food-name').value || "Refeição";
+            const name = document.getElementById('food-name').value || "Poção";
             const kcal = (p*4) + (c*4) + (f*9);
-
             userData.consumed.p += p; userData.consumed.c += c; userData.consumed.f += f; userData.consumed.kcal += kcal;
             userData.feedList.unshift({id: Date.now(), type:'food', name, p, c, f, kcal});
-            
-            document.getElementById('food-name').value = ''; document.getElementById('food-prot').value = ''; 
-            document.getElementById('food-carb').value = ''; document.getElementById('food-fat').value = '';
-            document.getElementById('ai-input').value = '';
+            document.getElementById('food-name').value = ''; document.getElementById('food-prot').value = ''; document.getElementById('food-carb').value = ''; document.getElementById('food-fat').value = ''; document.getElementById('ai-input').value = '';
             renderFeed(); updateDashboard(); await saveData();
         };
 
@@ -541,14 +446,11 @@
             const type = document.getElementById('work-type').value;
             const time = parseInt(document.getElementById('work-time').value) || 0;
             if(!time) return alert("Ritual sem tempo? ✨");
-
             let kcal = time * (type === 'Corrida' ? 10 : type === 'HIIT' ? 9 : 6);
             userData.burned += kcal;
             userData.feedList.unshift({id: Date.now(), type:'work', name: type, time, kcal});
-            
             const today = new Date().toDateString();
             if(!userData.workoutDays.includes(today)) userData.workoutDays.push(today);
-            
             document.getElementById('work-time').value = '';
             renderFeed(); updateDashboard(); await saveData();
         };
@@ -556,57 +458,28 @@
         window.addEvolution = async () => {
             const weight = parseFloat(document.getElementById('evo-weight').value);
             const date = document.getElementById('evo-date').value;
-            if(!weight || !date) return alert("Medidas incompletas! ✨");
-
-            userData.evolutionData.unshift({
-                id: Date.now(), date, weight,
-                bf: document.getElementById('evo-bf').value, 
-                waist: document.getElementById('evo-waist').value
-            });
+            if(!weight || !date) return alert("Dados incompletos ✨");
+            userData.evolutionData.unshift({ id: Date.now(), date, weight, bf: document.getElementById('evo-bf').value, waist: document.getElementById('evo-waist').value });
             userData.evolutionData.sort((a,b) => new Date(b.date) - new Date(a.date));
             renderEvolution(); await saveData();
-            alert("Evolução salva no seu grimório! 🌸");
         };
 
         function renderEvolution() {
-            const container = document.getElementById('evolution-container');
-            if(!container) return;
-            container.innerHTML = userData.evolutionData.map(e => `
-                <div class="feed-item">
-                    <span style="font-weight:800; color:var(--text-muted);">${e.date.split('-').reverse().join('/')}</span>
-                    <strong style="color:var(--primary); font-size: 18px;">${e.weight} kg</strong>
-                </div>
-            `).join('');
+            const c = document.getElementById('evolution-container'); if(!c) return;
+            c.innerHTML = userData.evolutionData.map(e => `<div class="feed-item"><span style="font-weight:800;">${e.date.split('-').reverse().join('/')}</span><strong style="color:var(--primary); font-size: 20px;">${e.weight} kg</strong></div>`).join('');
             updateChart();
         }
 
         function updateChart() {
-            const canvas = document.getElementById('evolutionChart');
-            if(!canvas) return;
+            const canvas = document.getElementById('evolutionChart'); if(!canvas) return;
             const sorted = [...userData.evolutionData].sort((a,b) => new Date(a.date) - new Date(b.date));
             const labels = sorted.map(d => d.date.split('-')[2] + '/' + d.date.split('-')[1]);
             const values = sorted.map(d => d.weight);
-
             if(myChart) myChart.destroy();
             myChart = new Chart(canvas, {
                 type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        data: values, 
-                        borderColor: '#FF85A1', 
-                        backgroundColor: 'rgba(255, 133, 161, 0.2)',
-                        fill: true, tension: 0.4, pointRadius: 6, pointBackgroundColor: '#FFF', pointBorderWidth: 3
-                    }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255, 133, 161, 0.05)' }, ticks: { font: { weight: '800' }, color: '#A68A99' } },
-                        x: { grid: { display: false }, ticks: { font: { weight: '800' }, color: '#A68A99' } }
-                    }
-                }
+                data: { labels, datasets: [{ data: values, borderColor: '#FF85A1', backgroundColor: 'rgba(255, 133, 161, 0.2)', fill: true, tension: 0.4, pointRadius: 6, pointBackgroundColor: '#FFF', pointBorderWidth: 3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { weight: '800' }, color: '#A68A99' } }, x: { grid: { display: false }, ticks: { font: { weight: '800' }, color: '#A68A99' } } } }
             });
         }
 
@@ -618,34 +491,13 @@
             if(id === 'sec-evolucao') setTimeout(updateChart, 100);
         };
 
-        window.fazerLogin = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            try { await signInWithEmailAndPassword(auth, email, pass); } catch(e) { alert("E-mail ou Senha incorretos! 🌙"); }
-        };
-
-        window.criarConta = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            try { await createUserWithEmailAndPassword(auth, email, pass); alert("Bruxinha cadastrada com sucesso! ✨"); } catch(e) { alert("Erro no cadastro, tente outro e-mail!"); }
-        };
-
+        window.fazerLogin = async () => { try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } catch(e) { alert("Senha incorreta bruxinha! 🌙"); } };
+        window.criarConta = async () => { try { await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); alert("Conta Criada! ✨"); } catch(e) { alert("Erro no cadastro!"); } };
         window.fazerLogout = () => signOut(auth);
 
         function renderFeed() {
-            const container = document.getElementById('feed-container');
-            if(!container) return;
-            container.innerHTML = userData.feedList.map(item => `
-                <div class="feed-item">
-                    <div>
-                        <b style="font-size: 16px;">${item.name}</b><br>
-                        <small style="color:var(--text-muted); font-weight:700;">${item.type === 'food' ? `PT:${item.p}g CB:${item.c}g` : `${item.time} min de treino`}</small>
-                    </div>
-                    <strong style="color: ${item.type === 'food' ? 'var(--primary)' : 'var(--accent)'}; font-size: 18px;">
-                        ${item.type === 'food' ? '+' : '-'}${item.kcal} <span style="font-size: 10px;">kcal</span>
-                    </strong>
-                </div>
-            `).join('');
+            const c = document.getElementById('feed-container'); if(!c) return;
+            c.innerHTML = userData.feedList.map(item => `<div class="feed-item"><div><b style="font-size: 17px;">${item.name}</b><br><small style="color:var(--text-muted); font-weight:800;">${item.type === 'food' ? `PT:${item.p}g CB:${item.c}g` : `${item.time} min`}</small></div><strong style="color: ${item.type === 'food' ? 'var(--primary)' : 'var(--accent)'}; font-size: 20px;">${item.type === 'food' ? '+' : '-'}${item.kcal}</strong></div>`).join('');
         }
 
         function renderWorkouts() {
@@ -656,24 +508,17 @@
                 {t: 'C', n: 'Costas e Bíceps', l: 'https://www.youtube.com/watch?v=OOXd0pq6BO8'},
                 {t: 'D', n: 'HIIT Abdominal', l: 'https://www.youtube.com/watch?v=dL8YAQLmKDY'},
                 {t: 'E', n: 'Circuito Funcional', l: 'https://www.youtube.com/watch?v=GJ6DFHz38Wo'},
-                {t: '🏃', n: 'Corrida Planilha', l: 'https://www.youtube.com/watch?v=n3oSXWHxRZc'}
+                {t: '🏃', n: 'Treino de Corrida', l: 'https://www.youtube.com/watch?v=n3oSXWHxRZc'}
             ];
-            container.innerHTML = data.map(w => `
-                <div class="workout-day">
-                    <div class="workout-header" onclick="this.parentElement.classList.toggle('open')">
-                        <span style="font-size: 16px;"><b>${w.t}</b> &nbsp; ${w.n}</span>
-                        <i class="ph ph-caret-down" style="color:var(--primary);"></i>
-                    </div>
-                    <div class="workout-content" style="border: 1.5px solid rgba(255, 133, 161, 0.1); border-top:none;">
-                        <a href="${w.l}" target="_blank" class="btn-video"><i class="ph-fill ph-play-circle"></i> Abrir Vídeo Aula no YouTube</a>
-                        <p style="font-size: 11px; margin-top: 10px; color: var(--text-muted); font-weight:700;">Siga as instruções do vídeo para a execução perfeita.</p>
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = data.map(w => `<div class="workout-day"><div class="workout-header" onclick="this.parentElement.classList.toggle('open')"><span><b>${w.t}</b> &nbsp; ${w.n}</span><i class="ph ph-caret-down" style="color:var(--primary);"></i></div><div class="workout-content"><a href="${w.l}" target="_blank" class="btn-yt"><i class="ph-fill ph-play-circle"></i> Assistir Ritual em Vídeo</a></div></div>`).join('');
         }
 
-        const goals = { emagrecer: { kcal: 1600, p: 130, c: 160, f: 48 }, massa: { kcal: 1950, p: 130, c: 230, f: 55 } };
-        window.setGoal = async (g) => { userData.currentGoal = g; updateDashboard(); await saveData(); };
+        window.setGoal = async (g, btn) => {
+            userData.currentGoal = g;
+            document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateDashboard(); await saveData();
+        };
 
     </script>
 </body>
