@@ -4,21 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- TAGS MÁGICAS PARA PARECER UM APP NATIVO NO IPHONE E ANDROID -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#140D20">
     <meta name="apple-mobile-web-app-title" content="Grimório">
-    <!-- Ícone temporário em formato de emoji para a tela inicial -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
 
     <title>Diário Mágico - Taylise</title>
-    <!-- Ícones Fofos e Místicos -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Gráficos de Evolução -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Fontes Arredondadas -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -140,9 +135,6 @@
         .input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .input-box { position: relative; }
         .input-box span { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-muted); font-weight: 800; }
-
-        .ai-group { background: linear-gradient(135deg, rgba(199, 139, 255, 0.1), rgba(255, 158, 187, 0.05)); padding: 20px; border-radius: 24px; border: 2px dashed var(--primary); margin-bottom: 25px; box-shadow: 0 4px 15px rgba(199, 139, 255, 0.1); }
-        .ai-group label { display: flex; align-items: center; gap: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 12px; font-weight: 800; }
         
         .feed-header { font-family: 'Quicksand', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-main); margin: 35px 0 20px; display: flex; align-items: center; gap: 10px;}
         .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(45, 30, 65, 0.6); border-radius: 24px; margin-bottom: 15px; border: 1px solid rgba(199, 139, 255, 0.2); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: 0.3s; }
@@ -204,7 +196,6 @@
 </head>
 <body>
 
-    <!-- 1. TELA DE LOGIN MÍSTICA -->
     <div id="login-screen">
         <div class="login-card">
             <div class="login-content">
@@ -221,9 +212,7 @@
         </div>
     </div>
 
-    <!-- 2. APP PRINCIPAL -->
     <div id="app-content">
-        <!-- CABEÇALHO -->
         <header>
             <span class="header-tag"><i class="ph-fill ph-book-bookmark float-icon"></i> Meu Grimório</span>
             <h1>Taylise Caroline <i class="ph-fill ph-shooting-star float-icon" style="color: var(--secondary); font-size: 28px;"></i></h1>
@@ -232,14 +221,12 @@
 
         <div class="container">
             
-            <!-- ================= AB 1: DIÁRIO ================= -->
             <div id="sec-diario" class="section active">
                 <div class="goal-selector">
                     <button class="goal-btn active" onclick="setGoal('emagrecer')" id="btn-emagrecer">Definir Corpo</button>
                     <button class="goal-btn" onclick="setGoal('massa')" id="btn-massa">Hipertrofia</button>
                 </div>
 
-                <!-- PROGRESSO -->
                 <div class="card" style="padding: 20px;">
                     <h3 class="card-title" style="font-size: 18px; margin-bottom: 15px;"><i class="ph-fill ph-trend-up float-icon" style="color:var(--secondary);"></i> Seu Progresso</h3>
                     
@@ -286,12 +273,6 @@
 
                 <div class="card">
                     <h3 class="card-title"><i class="ph-fill ph-flask float-icon"></i> O Caldeirão (Refeições)</h3>
-                    
-                    <div class="ai-group">
-                        <label><i class="ph-fill ph-magic-wand float-icon" style="font-size:20px;"></i> Varinha Inteligente</label>
-                        <textarea id="ai-input" rows="2" placeholder="O que você comeu? Ex: Panqueca de aveia, 1 maçã..."></textarea>
-                        <button id="btn-ai" class="cute-btn" style="padding:14px; font-size:14px;" onclick="calculateAI()"><i class="ph-bold ph-sparkle"></i> Adivinhar Nutrientes</button>
-                    </div>
 
                     <div class="input-group">
                         <label>Minhas Poções Salvas 📚</label>
@@ -341,7 +322,6 @@
                 <div style="height: 20px;"></div>
             </div>
 
-            <!-- ================= AB 2: TREINOS ================= -->
             <div id="sec-treino" class="section">
                 <div style="margin-bottom: 25px; text-align: center;">
                     <h2 style="font-size: 28px; font-weight: 800; color: var(--text-main);">Seus Treinos</h2>
@@ -414,7 +394,6 @@
                 </div>
             </div>
 
-            <!-- ================= AB 3: EVOLUÇÃO ================= -->
             <div id="sec-evolucao" class="section">
                 <div class="profile-card">
                     <div class="profile-avatar">TC</div>
@@ -464,7 +443,6 @@
                     <button class="cute-btn" style="margin-top: 10px;" onclick="addEvolution()"><i class="ph-bold ph-heart"></i> Salvar Avaliação</button>
                 </div>
 
-                <!-- GRÁFICO INTELIGENTE FOFÍSSIMO -->
                 <div class="card">
                     <h3 class="card-title"><i class="ph-fill ph-chart-line-up float-icon" style="color:var(--secondary);"></i> Desenho da Evolução</h3>
                     <div class="chart-container">
@@ -474,20 +452,16 @@
 
                 <h2 class="feed-header"><i class="ph-fill ph-shooting-star float-icon" style="color:var(--primary);"></i> Sua Jornada</h2>
                 <div id="evolution-container"></div>
+                
+                <h2 class="feed-header" style="margin-top: 35px;"><i class="ph-fill ph-clock-counter-clockwise float-icon" style="color:var(--accent);"></i> Arquivo de Dias Passados</h2>
+                <div id="history-container"></div>
+
                 <div style="height: 20px;"></div>
             </div>
 
-            <!-- ================= AB 4: AJUSTES ================= -->
             <div id="sec-guia" class="section">
                 <div style="margin-bottom: 25px; text-align: center;">
                     <h2 style="font-size: 28px; font-weight: 800; color: var(--text-main);">Ajustes Mágicos</h2>
-                </div>
-                
-                <div class="card">
-                    <h3 style="font-size: 16px; margin-bottom:12px; color:var(--primary); text-transform:uppercase; font-weight:800; display:flex; align-items:center; gap:8px;"><i class="ph-fill ph-magic-wand float-icon"></i> Inteligência Artificial</h3>
-                    <p style="font-size:13px; color:var(--text-muted); font-weight:700; line-height:1.6; text-align:center;">
-                        A Inteligência Artificial já está integrada ao seu Firebase! ✨ Use a varinha na aba do Grimório para calcular refeições.
-                    </p>
                 </div>
 
                 <div class="card">
@@ -508,7 +482,6 @@
 
         </div>
 
-        <!-- NAVEGAÇÃO INFERIOR -->
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="switchTab('sec-diario', this)"><i class="ph-fill ph-book-bookmark"></i><span>Diário</span></button>
             <button class="nav-item" onclick="switchTab('sec-treino', this)"><i class="ph-fill ph-barbell"></i><span>Treinos</span></button>
@@ -517,7 +490,6 @@
         </nav>
     </div>
 
-    <!-- MÓDULOS DO FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
@@ -537,7 +509,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const geminiApiKey = "";
 
         // ESTADO DO APP
         let userId = null;
@@ -547,6 +518,7 @@
         let feedList = [];
         let evolutionData = [];
         let workoutDaysArr = [];
+        let historyLog = {}; // <-- Novo Estado para o Histórico dos Dias!
         let myChart = null;
         
         const defaultMeals = {
@@ -565,7 +537,7 @@
         function loadSmartFoodDropdown() {
             const select = document.getElementById('smart-food');
             if(!select) return;
-            select.innerHTML = '<option value="">Escolha ou adivinhe com a Varinha... ✨</option>';
+            select.innerHTML = '<option value="">Escolha uma poção salva... ✨</option>';
             for (let meal in smartDatabase) {
                 const opt = document.createElement('option');
                 opt.value = meal; opt.textContent = meal;
@@ -578,6 +550,7 @@
             updateDashboard(); 
             renderEvolution();
             renderFeed();
+            renderHistory();
             const evoDateInput = document.getElementById('evo-date');
             if(evoDateInput) evoDateInput.valueAsDate = new Date();
             
@@ -596,12 +569,23 @@
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+                    historyLog = data.historyLog || {};
+
                     if (data.lastDate === today) {
                         feedList = data.feedList || [];
                         consumed = data.consumed || { prot: 0, carb: 0, fat: 0, kcal: 0 };
                         burned = data.burned || 0;
                     } else {
+                        // Salva o dia de ontem no arquivo histórico antes de limpar!
+                        if (data.feedList && data.feedList.length > 0 && data.lastDate) {
+                            historyLog[data.lastDate] = {
+                                feedList: data.feedList,
+                                consumed: data.consumed,
+                                burned: data.burned
+                            };
+                        }
                         feedList = []; consumed = { prot: 0, carb: 0, fat: 0, kcal: 0 }; burned = 0;
+                        await saveCloudData();
                     }
                     smartDatabase = data.smartDatabase || defaultMeals;
                     evolutionData = data.evolutionData || [];
@@ -621,7 +605,7 @@
             try {
                 await setDoc(doc(db, 'users', userId), {
                     feedList, consumed, burned, smartDatabase, evolutionData, 
-                    currentGoal, lastDate: new Date().toDateString(), workoutDaysArr
+                    currentGoal, lastDate: new Date().toDateString(), workoutDaysArr, historyLog
                 }, { merge: true });
             } catch (e) {
                 console.error("Erro ao Salvar:", e);
@@ -715,65 +699,6 @@
             await saveCloudData();
         };
 
-        // ================= IA MÁGICA SIMPLIFICADA =================
-        window.calculateAI = async () => {
-            const inputEl = document.getElementById('ai-input');
-            if(!inputEl) return;
-            const input = inputEl.value.trim();
-            if(!input) return alert("Descreva a poção ou comida para a varinha adivinhar! 🌸");
-
-            const btn = document.getElementById('btn-ai');
-            const originalText = btn ? btn.innerHTML : "Adivinhar";
-            if(btn) {
-                btn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Lendo as Estrelas...'; 
-                btn.disabled = true;
-            }
-
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
-                
-                const payload = {
-                    contents: [{ parts: [{ text: `Aja como nutricionista. Retorne APENAS um JSON válido. Diga as calorias e os macronutrientes do prato: "${input}". Use o formato exato: {"name": "nome curto", "p": numeroProteina, "c": numeroCarbo, "f": numeroGordura}` }] }],
-                    generationConfig: { responseMimeType: "application/json" }
-                };
-
-                const response = await fetch(url, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(payload) 
-                });
-
-                if(!response.ok) throw new Error("A varinha ficou sem energia.");
-
-                const data = await response.json();
-                let textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                
-                // Limpeza para evitar qualquer caractere invisível
-                textResult = textResult.replace(/```json/gi, '').replace(/```/g, '').trim();
-                const result = JSON.parse(textResult);
-
-                if (result && result.name) {
-                    const safeSetVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; }
-                    
-                    safeSetVal('food-name', result.name);
-                    safeSetVal('food-prot', Math.round(result.p || 0));
-                    safeSetVal('food-carb', Math.round(result.c || 0));
-                    safeSetVal('food-fat', Math.round(result.f || 0));
-                    safeSetVal('smart-food', '');
-                    
-                    const sr = document.getElementById('save-recipe');
-                    if(sr) sr.checked = true;
-                } else {
-                    throw new Error("Formato inválido");
-                }
-            } catch (e) {
-                console.error(e);
-                alert("A magia falhou! Tente detalhar melhor a refeição ou aguarde um segundo e clique novamente. ✨");
-            } finally {
-                if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
-            }
-        };
-
         window.fillSmartFood = () => {
             const val = document.getElementById('smart-food').value;
             if (smartDatabase[val]) {
@@ -814,8 +739,6 @@
             consumed.prot += p; consumed.carb += c; consumed.fat += f; consumed.kcal += kcal;
 
             nameEl.value = ''; protEl.value = ''; carbEl.value = ''; fatEl.value = '';
-            const aiInputEl = document.getElementById('ai-input');
-            if(aiInputEl) aiInputEl.value = '';
             if(saveRecipeCb) saveRecipeCb.checked = false;
             
             renderFeed(); updateDashboard(); await saveCloudData();
@@ -992,6 +915,46 @@
                 renderEvolution(); await saveCloudData();
             }
         };
+
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            const dates = Object.keys(historyLog).sort((a,b) => new Date(b) - new Date(a));
+
+            if(dates.length === 0) {
+                return container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:14px; font-weight:700; margin-top:20px;">O grimório de dias passados está vazio.</p>';
+            }
+
+            dates.forEach(dateStr => {
+                const dayData = historyLog[dateStr];
+                const displayDate = new Date(dateStr).toLocaleDateString('pt-BR');
+                
+                const div = document.createElement('div');
+                div.className = 'evolution-item';
+                
+                div.innerHTML = `
+                    <div style="display:flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed rgba(199, 139, 255, 0.2); padding-bottom: 10px; margin-bottom: 10px;">
+                        <h4 style="color:var(--text-main); font-size: 15px; font-weight: 800;"><i class="ph-fill ph-calendar-blank" style="color:var(--primary);"></i> ${displayDate}</h4>
+                        <span style="font-size: 11px; color:var(--text-muted); font-weight: 800; text-transform: uppercase;">
+                            <span style="color:var(--primary)">In: ${Math.round(dayData.consumed.kcal)}</span> | <span style="color:var(--accent)">Out: ${dayData.burned}</span>
+                        </span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-muted); font-weight: 700;">
+                        ${dayData.feedList.map(item => `
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 6px;">
+                                <span>${item.type === 'food' ? '🔮' : '👟'} ${item.name}</span>
+                                <span style="color: ${item.type === 'food' ? 'var(--text-main)' : 'var(--text-main)'}; font-weight: 800;">
+                                    ${item.type === 'food' ? '+' : '-'}${item.kcal} kcal
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
 
     </script>
 </body>
